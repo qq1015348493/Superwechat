@@ -25,9 +25,8 @@ import com.hyphenate.chat.EMMessage.Status;
 import com.hyphenate.chat.EMMessage.Type;
 import com.hyphenate.chat.EMOptions;
 import com.hyphenate.chat.EMTextMessageBody;
-import cn.ucai.superwechat.R;
 
-import cn.ucai.superwechat.db.DemoDBManager;
+import cn.ucai.superwechat.db.SuperwechatDBManager;
 import cn.ucai.superwechat.db.InviteMessgeDao;
 import cn.ucai.superwechat.db.UserDao;
 import cn.ucai.superwechat.domain.EmojiconExampleGroupData;
@@ -62,7 +61,7 @@ import android.content.IntentFilter;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
-public class DemoHelper {
+public class SuperwechatHelper {
     /**
      * data sync listener
      */
@@ -89,9 +88,9 @@ public class DemoHelper {
 
 	private UserProfileManager userProManager;
 
-	private static DemoHelper instance = null;
+	private static SuperwechatHelper instance = null;
 	
-	private DemoModel demoModel = null;
+	private SuperwechatModel demoModel = null;
 	
 	/**
      * sync groups status listener
@@ -129,12 +128,12 @@ public class DemoHelper {
 
     private boolean isGroupAndContactListenerRegisted;
 
-	private DemoHelper() {
+	private SuperwechatHelper() {
 	}
 
-	public synchronized static DemoHelper getInstance() {
+	public synchronized static SuperwechatHelper getInstance() {
 		if (instance == null) {
-			instance = new DemoHelper();
+			instance = new SuperwechatHelper();
 		}
 		return instance;
 	}
@@ -146,7 +145,7 @@ public class DemoHelper {
 	 *            application context
 	 */
 	public void init(Context context) {
-	    demoModel = new DemoModel(context);
+	    demoModel = new SuperwechatModel(context);
 	    EMOptions options = initChatOptions();
 	    //use default options if options is null
 		if (EaseUI.getInstance().init(context, options)) {
@@ -614,7 +613,7 @@ public class DemoHelper {
 
         @Override
         public void onContactDeleted(String username) {
-            Map<String, EaseUser> localUsers = DemoHelper.getInstance().getContactList();
+            Map<String, EaseUser> localUsers = SuperwechatHelper.getInstance().getContactList();
             localUsers.remove(username);
             userDao.deleteContact(username);
             inviteMessgeDao.deleteMessage(username);
@@ -839,8 +838,8 @@ public class DemoHelper {
 	    return easeUI.getNotifier();
 	}
 	
-	public DemoModel getModel(){
-        return (DemoModel) demoModel;
+	public SuperwechatModel getModel(){
+        return (SuperwechatModel) demoModel;
     }
 	
 	/**
@@ -1230,7 +1229,7 @@ public class DemoHelper {
         setContactList(null);
         setRobotList(null);
         getUserProfileManager().reset();
-        DemoDBManager.getInstance().closeDB();
+        SuperwechatDBManager.getInstance().closeDB();
     }
 
     public void pushActivity(Activity activity) {
