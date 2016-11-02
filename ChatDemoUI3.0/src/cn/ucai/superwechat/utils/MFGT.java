@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Intent;
 
 import cn.ucai.superwechat.R;
-import cn.ucai.superwechat.ui.GuideActivity;
 import cn.ucai.superwechat.ui.LoginActivity;
 import cn.ucai.superwechat.ui.MainActivity;
 import cn.ucai.superwechat.ui.RegisterActivity;

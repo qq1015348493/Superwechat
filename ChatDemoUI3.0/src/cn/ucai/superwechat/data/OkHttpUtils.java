@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import cn.ucai.superwechat.I;
+import cn.ucai.superwechat.SuperwechatApplication;
 import cn.ucai.superwechat.bean.Result;
 import cn.ucai.superwechat.utils.L;
 import okhttp3.Cache;
@@ -56,6 +57,8 @@ public class OkHttpUtils<T> {
     FormBody.Builder mFormBodyBuilder;
     MultipartBody.Builder mMultipartBodyBuilder;
 
+
+
     public interface OnCompleteListener<T> {
         void onSuccess(T result);
 
@@ -85,7 +88,7 @@ public class OkHttpUtils<T> {
                 }
             }
         }
-//        initHandler();
+        initHandler();
     }
 
     /**
@@ -143,8 +146,8 @@ public class OkHttpUtils<T> {
     }
 
 
-    /*private void initHandler() {
-        mHandler = new Handler(SuperWeChatApplication.applicationContext.getMainLooper()) {
+    private void initHandler() {
+        mHandler = new Handler(SuperwechatApplication.applicationContext.getMainLooper()) {
             @Override
             public void handleMessage(Message msg) {
                 switch (msg.what) {
@@ -158,7 +161,7 @@ public class OkHttpUtils<T> {
                 }
             }
         };
-    }*/
+    }
 
     /**
      * 用post请求，添加一个文件
