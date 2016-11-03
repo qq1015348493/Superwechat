@@ -5,17 +5,13 @@
     android:background="#eff2f6"
     android:orientation="vertical" >
 
+    <include android:id="@+id/lr_title"
+        layout="@layout/view_layout_title"/>
+
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="0dip"
-        android:layout_weight="1" >
+        android:layout_height="wrap_content">
 
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:layout_centerInParent="true"
-            android:src="@drawable/em_welcom_logo" />
     </RelativeLayout>
 
     <RelativeLayout
@@ -92,30 +88,15 @@
             android:layout_marginLeft="30dp"
             android:layout_marginRight="30dp"
             android:layout_marginTop="30dp"
-            android:orientation="horizontal" >
+            android:orientation="vertical"
+            >
 
             <Button
-                android:layout_width="0dp"
+                android:id="@+id/btn_login"
+                android:padding="8dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="10dip"
-                android:layout_marginRight="10dip"
-                android:layout_weight="1"
-                android:background="@drawable/em_button_register_bg"
-                android:gravity="center"
-                android:onClick="register"
-                android:paddingBottom="7dp"
-                android:paddingTop="7dp"
-                android:text="@string/register"
-                android:textColor="@android:color/black"
-                android:textSize="18sp" />
-
-            <Button
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="10dip"
-                android:layout_marginRight="10dip"
-                android:layout_weight="1"
-                android:background="@drawable/em_button_login_bg"
+                android:background="#F0F0"
                 android:gravity="center"
                 android:onClick="login"
                 android:paddingBottom="7dp"
@@ -123,7 +104,26 @@
                 android:text="@string/login"
                 android:textColor="@android:color/white"
                 android:textSize="18sp" />
+            <TextView
+                android:id="@+id/tv_wenti"
+                android:gravity="right"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="登录遇到问题？"
+                android:textColor="#FF0A1AEF"/>
         </LinearLayout>
-    </RelativeLayout>
 
+        <Button
+            android:padding="8dp"
+            android:background="#F0F0F0"
+            android:id="@+id/btn_register"
+            android:layout_width="80dp"
+            android:layout_height="36dp"
+            android:text="@string/login_btn_register"
+            android:textColor="@color/text_hint"
+            android:textSize="15sp"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="37dp" />
+    </RelativeLayout>
 </LinearLayout>

@@ -139,7 +139,6 @@ public class RegisterActivity extends BaseActivity {
                 if (result != null && result.isRetMsg()) {
                     registerEMServer(username,pwd);
                 } else {
-                    L.i("失败");
                     unregisterAppServer(username);
                 }
             }
@@ -172,7 +171,6 @@ public class RegisterActivity extends BaseActivity {
             public void run() {
                 try {
                     // call method in SDK
-                    L.i("EM    "+username+"       "+pwd);
                     EMClient.getInstance().createAccount(username, pwd);
                     runOnUiThread(new Runnable() {
                         public void run() {
@@ -185,7 +183,6 @@ public class RegisterActivity extends BaseActivity {
                         }
                     });
                 } catch (final HyphenateException e) {
-                    L.i("失败2");
                     unregisterAppServer(username);
                     runOnUiThread(new Runnable() {
                         public void run() {
