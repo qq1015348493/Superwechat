@@ -30,6 +30,7 @@ import android.widget.Toast;
 
 import com.hyphenate.EMCallBack;
 import com.hyphenate.chat.EMClient;
+import com.hyphenate.easeui.domain.User;
 import com.hyphenate.easeui.utils.EaseCommonUtils;
 
 import butterknife.BindView;
@@ -38,10 +39,14 @@ import butterknife.OnClick;
 import cn.ucai.superwechat.R;
 import cn.ucai.superwechat.SuperwechatApplication;
 import cn.ucai.superwechat.SuperwechatHelper;
+import cn.ucai.superwechat.bean.Result;
 import cn.ucai.superwechat.data.NetDao;
 import cn.ucai.superwechat.data.OkHttpUtils;
 import cn.ucai.superwechat.db.SuperwechatDBManager;
+import cn.ucai.superwechat.db.UserDao;
+import cn.ucai.superwechat.utils.L;
 import cn.ucai.superwechat.utils.MFGT;
+import cn.ucai.superwechat.utils.ResultUtils;
 
 /**
  * Login screen
@@ -197,8 +202,21 @@ public class LoginActivity extends BaseActivity {
             @Override
             public void onSuccess(String s) {
                 Log.e(TAG,"s"+s);
-
-                loginSuccess();
+                if(s!=null&&s!=""){
+                    Result result = ResultUtils.getResultFromJson(s, User.class);
+                    if(result!=null&&result.isRetMsg()){
+                        User user = (User) result.getRetData();
+                        if(user!=null){
+                            UserDao dao = new UserDao(mcontext);
+                            dao.saveUser(user);
+                            SuperwechatHelper.getInstance().setCurrentUser(user);
+                            loginSuccess();
+                        }
+                    }else {
+                        pd.dismiss();
+                        L.e(TAG,"login fail,"+result);
+                    }
+                }
             }
 
             @Override
