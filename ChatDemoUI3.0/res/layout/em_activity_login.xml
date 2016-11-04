@@ -82,6 +82,7 @@
         </RelativeLayout>
 
         <LinearLayout
+            android:gravity="center"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/rl_password"
@@ -111,19 +112,17 @@
                 android:layout_height="wrap_content"
                 android:text="登录遇到问题？"
                 android:textColor="#FF0A1AEF"/>
+            <Button
+                android:layout_marginTop="20dp"
+                android:background="#F0F0F0"
+                android:id="@+id/btn_register"
+                android:layout_width="80dp"
+                android:layout_height="36dp"
+                android:text="@string/login_btn_register"
+                android:textColor="@color/text_hint"
+                android:textSize="15sp"
+                />
         </LinearLayout>
 
-        <Button
-            android:padding="8dp"
-            android:background="#F0F0F0"
-            android:id="@+id/btn_register"
-            android:layout_width="80dp"
-            android:layout_height="36dp"
-            android:text="@string/login_btn_register"
-            android:textColor="@color/text_hint"
-            android:textSize="15sp"
-            android:layout_alignParentBottom="true"
-            android:layout_centerHorizontal="true"
-            android:layout_marginBottom="37dp" />
     </RelativeLayout>
 </LinearLayout>
