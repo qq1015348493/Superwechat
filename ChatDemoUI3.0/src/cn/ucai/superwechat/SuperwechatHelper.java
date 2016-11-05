@@ -1243,6 +1243,7 @@ public class SuperwechatHelper {
         isGroupAndContactListenerRegisted = false;
         
         setContactList(null);
+        setAppContactList(null);
         setRobotList(null);
         getUserProfileManager().reset();
         SuperwechatDBManager.getInstance().closeDB();
