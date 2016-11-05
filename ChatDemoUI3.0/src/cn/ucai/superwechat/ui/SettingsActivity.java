@@ -23,6 +23,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -36,6 +37,9 @@ import cn.ucai.superwechat.Constant;
 import cn.ucai.superwechat.SuperwechatHelper;
 import cn.ucai.superwechat.SuperwechatModel;
 import cn.ucai.superwechat.R;
+import cn.ucai.superwechat.utils.ExitAppUtils;
+import cn.ucai.superwechat.utils.MFGT;
+
 import com.hyphenate.easeui.widget.EaseSwitchButton;
 import com.hyphenate.util.EMLog;
 
@@ -116,6 +120,12 @@ public class SettingsActivity extends BaseActivity implements OnClickListener {
 
 		if(savedInstanceState != null && savedInstanceState.getBoolean("isConflict", false))
             return;
+		ImageView back = (ImageView) findViewById(R.id.img_back);
+		back.setOnClickListener(this);
+		back.setVisibility(View.VISIBLE);
+		TextView title = (TextView) findViewById(R.id.text_title);
+		title.setVisibility(View.VISIBLE);
+		title.setText(getString(R.string.set));
 		rl_switch_notification = (RelativeLayout)findViewById(R.id.rl_switch_notification);
 		rl_switch_sound = (RelativeLayout)findViewById(R.id.rl_switch_sound);
 		rl_switch_vibrate = (RelativeLayout)findViewById(R.id.rl_switch_vibrate);
@@ -353,6 +363,8 @@ public class SettingsActivity extends BaseActivity implements OnClickListener {
 			case R.id.rl_custom_server:
 				startActivity(new Intent(this, SetServersActivity.class));
 				break;
+			case R.id.img_back:
+				MFGT.finish(this);
 			default:
 				break;
 		}
@@ -373,7 +385,7 @@ public class SettingsActivity extends BaseActivity implements OnClickListener {
 					public void run() {
 						pd.dismiss();
 						// show login screen
-						finish();
+						ExitAppUtils.getInstance().exit();
 						startActivity(new Intent(SettingsActivity.this, LoginActivity.class));
 						
 					}
