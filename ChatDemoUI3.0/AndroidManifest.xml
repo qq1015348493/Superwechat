@@ -46,7 +46,7 @@
 
     <uses-permission android:name="cn.ucai.superwechat.permission.MIPUSH_RECEIVE" />
 
-    <android:uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
     <application
         android:name=".SuperwechatApplication"
@@ -275,7 +275,10 @@
             android:name=".ui.SetServersActivity"
             android:screenOrientation="portrait"
             android:theme="@style/horizontal_slide" />
-
+        <activity
+            android:name=".ui.SettingsActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/horizontal_slide" />
         <!-- 红包相关Activity start -->
         <!-- 发红包 -->
         <activity

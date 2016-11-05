@@ -7,11 +7,10 @@ import cn.ucai.superwechat.R;
 import cn.ucai.superwechat.ui.LoginActivity;
 import cn.ucai.superwechat.ui.MainActivity;
 import cn.ucai.superwechat.ui.RegisterActivity;
+import cn.ucai.superwechat.ui.SettingsActivity;
 
 
-public class MFGT {
-    public static void finish(Activity activity){
-        activity.finish();
+public class MFGT { public static void finish(Activity activity){ activity.finish();
         activity.overridePendingTransition(R.anim.push_right_in,R.anim.push_right_out);
     }
     public static void gotoMainActivity(Activity context){
@@ -37,5 +36,8 @@ public class MFGT {
 
     public static void gotoRegister(Activity context) {
         startActivity(context, RegisterActivity.class);
+    }
+    public static void gotoSettings(Activity context) {
+        startActivity(context, SettingsActivity.class);
     }
 }

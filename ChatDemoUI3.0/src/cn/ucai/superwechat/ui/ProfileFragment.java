@@ -18,6 +18,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import cn.ucai.superwechat.Constant;
 import cn.ucai.superwechat.R;
+import cn.ucai.superwechat.utils.MFGT;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -31,6 +32,8 @@ public class ProfileFragment extends Fragment {
     TextView tvProfileNick;
     @BindView(R.id.tv_profile_username)
     TextView tvProfileUsername;
+
+    MainActivity mcontext;
 
     public ProfileFragment() {
         // Required empty public constructor
@@ -47,6 +50,7 @@ public class ProfileFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_profile, container, false);
         ButterKnife.bind(this, view);
+        mcontext = (MainActivity) getContext();
         return view;
     }
 
@@ -74,6 +78,7 @@ public class ProfileFragment extends Fragment {
                 RedPacketUtil.startChangeActivity(getActivity());
                 break;
             case R.id.tv_profile_setting:
+                MFGT.gotoSettings(mcontext);
                 break;
         }
     }
