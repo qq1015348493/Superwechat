@@ -208,8 +208,7 @@ public class LoginActivity extends BaseActivity {
                         User user = (User) result.getRetData();
                         if(user!=null){
                             UserDao dao = new UserDao(mcontext);
-                            dao.saveUser(user);
-                            SuperwechatHelper.getInstance().setCurrentUser(user);
+                            dao.saveAppContact(user);
                             loginSuccess();
                         }
                     }else {
@@ -260,6 +259,9 @@ public class LoginActivity extends BaseActivity {
         super.onResume();
         if (autoLogin) {
             return;
+        }
+        if(SuperwechatHelper.getInstance().getCurrentUsernName()!=null){
+            usernameEditText.setText(SuperwechatHelper.getInstance().getCurrentUsernName());
         }
     }
 

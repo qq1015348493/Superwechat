@@ -290,7 +290,6 @@ public class SuperwechatHelper {
                 return null;
             }
         });
-        
         //set notification options, will use default if you don't set it
         easeUI.getNotifier().setNotificationInfoProvider(new EaseNotificationInfoProvider() {
             
@@ -326,7 +325,7 @@ public class SuperwechatHelper {
                     return message.getFrom() + ": " + ticker;
                 }
             }
-            
+
             @Override
             public String getLatestText(EMMessage message, int fromUsersNum, int messageNum) {
                 // here you can customize the text.
@@ -1290,7 +1289,7 @@ public class SuperwechatHelper {
     }
 
     public Map<String, User> getAppContactList() {
-        if (isLoggedIn() && appContactList == null) {
+        if (isLoggedIn() && (appContactList == null||appContactList.size()==0)) {
             appContactList = demoModel.getAppContactList();
         }
 
