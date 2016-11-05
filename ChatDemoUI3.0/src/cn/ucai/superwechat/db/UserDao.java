@@ -13,11 +13,13 @@
  */
 package cn.ucai.superwechat.db;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import android.content.Context;
 
+import cn.ucai.superwechat.SuperwechatHelper;
 import cn.ucai.superwechat.domain.RobotUser;
 import com.hyphenate.easeui.domain.EaseUser;
 import com.hyphenate.easeui.domain.User;
@@ -118,5 +120,18 @@ public class UserDao {
 
 	public boolean updateUser(User user){
 		return SuperwechatDBManager.getInstance().updateUser(user);
+	}
+
+	public void saveAppContact(User user) {
+		SuperwechatDBManager.getInstance().saveAppContact(user);
+	}
+
+
+	public Map<String,User> getAppContactList() {
+		return SuperwechatDBManager.getInstance().getAppContactList();
+	}
+
+	public void saveAppContactList(List<User> mList) {
+		SuperwechatDBManager.getInstance().saveAppContactList(mList);
 	}
 }
