@@ -129,4 +129,5 @@ public class EaseUserUtils {
     public static void setAppUserNameWithInfo(String mUserName, TextView textView) {
         setAppUserName("微信号 :",mUserName,textView);
     }
+
 }

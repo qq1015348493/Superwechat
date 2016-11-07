@@ -2,6 +2,7 @@ package cn.ucai.superwechat.ui;
 
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -13,6 +14,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import cn.ucai.superwechat.I;
 import cn.ucai.superwechat.R;
+import cn.ucai.superwechat.SuperwechatHelper;
 import cn.ucai.superwechat.utils.MFGT;
 
 
@@ -32,6 +34,13 @@ public class FriendProfileActivity extends BaseActivity {
     @BindView(R.id.tv_profile_username)
     TextView tvProfileUsername;
     User user = null;
+    @BindView(R.id.bt_friend_profile_send)
+    Button btFriendProfileSend;
+    @BindView(R.id.bt_friend_profile_chat)
+    Button btFriendProfileChat;
+    @BindView(R.id.bt_friend_profile_add)
+    Button btFriendProfileAdd;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -49,17 +58,38 @@ public class FriendProfileActivity extends BaseActivity {
         textTitle.setText(R.string.userinfo_txt_profile);
         textTitle.setVisibility(View.VISIBLE);
         setUserInfo();
+        isFriend();
+    }
+
+    private void isFriend() {
+        if (SuperwechatHelper.getInstance().getAppContactList().containsKey(user.getMUserName())) {
+            btFriendProfileSend.setVisibility(View.VISIBLE);
+            btFriendProfileChat.setVisibility(View.VISIBLE);
+        }else {
+            btFriendProfileAdd.setVisibility(View.VISIBLE);
+        }
     }
 
     private void setUserInfo() {
-        EaseUserUtils.setAppUserAvatar(this,user.getMUserName(),ivFriendProfileAvatar);
-        EaseUserUtils.setAppUserNick(user.getMUserName(),tvProfileNickname);
-        EaseUserUtils.setAppUserNameWithInfo(user.getMUserName(),tvProfileUsername);
+        EaseUserUtils.setAppUserAvatar(this, user.getMUserName(), ivFriendProfileAvatar);
+        EaseUserUtils.setAppUserNick(user.getMUserNick(), tvProfileNickname);
+        EaseUserUtils.setAppUserNameWithInfo(user.getMUserName(), tvProfileUsername);
     }
 
 
-    @OnClick(R.id.img_back)
-    public void onClick() {
-        MFGT.finish(this);
+
+    @OnClick({R.id.img_back,R.id.bt_friend_profile_send, R.id.bt_friend_profile_chat, R.id.bt_friend_profile_add})
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.img_back:
+                MFGT.finish(this);
+                break;
+            case R.id.bt_friend_profile_send:
+                break;
+            case R.id.bt_friend_profile_chat:
+                break;
+            case R.id.bt_friend_profile_add:
+                break;
+        }
     }
 }

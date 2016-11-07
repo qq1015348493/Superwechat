@@ -26,9 +26,19 @@ import android.widget.Toast;
 import com.hyphenate.chat.EMClient;
 import cn.ucai.superwechat.SuperwechatHelper;
 import cn.ucai.superwechat.R;
+import cn.ucai.superwechat.bean.Result;
+import cn.ucai.superwechat.data.NetDao;
+import cn.ucai.superwechat.data.OkHttpUtils;
+import cn.ucai.superwechat.utils.CommonUtils;
+import cn.ucai.superwechat.utils.L;
+import cn.ucai.superwechat.utils.MFGT;
+import cn.ucai.superwechat.utils.ResultUtils;
+
+import com.hyphenate.easeui.domain.User;
 import com.hyphenate.easeui.widget.EaseAlertDialog;
 
 public class AddContactActivity extends BaseActivity{
+	private static final String TAG = AddContactActivity.class.getCanonicalName();
 	private EditText editText;
 	private RelativeLayout searchedUserLayout;
 	private TextView nameText;
@@ -60,23 +70,52 @@ public class AddContactActivity extends BaseActivity{
 	public void searchContact(View v) {
 		final String name = editText.getText().toString();
 		String saveText = searchBtn.getText().toString();
-		
-		if (getString(R.string.button_search).equals(saveText)) {
-			toAddUsername = name;
-			if(TextUtils.isEmpty(name)) {
-				new EaseAlertDialog(this, R.string.Please_enter_a_username).show();
-				return;
+		toAddUsername = name;
+		if(TextUtils.isEmpty(name)) {
+			new EaseAlertDialog(this, R.string.Please_enter_a_username).show();
+			return;
+		}
+
+		progressDialog = new ProgressDialog(this);
+		String str = getResources().getString(R.string.addcontact_search);
+		progressDialog.setMessage(str);
+		progressDialog.setCanceledOnTouchOutside(false);
+		progressDialog.show();
+
+		searchAppUser();
+		}
+
+	private void searchAppUser() {
+		NetDao.syncUser(this, toAddUsername, new OkHttpUtils.OnCompleteListener<String>() {
+			@Override
+			public void onSuccess(String s) {
+				if(s!=null){
+					progressDialog.dismiss();
+					Result result = ResultUtils.getResultFromJson(s, User.class);
+					if(result!=null&&result.isRetMsg()){
+						User u = (User) result.getRetData();
+						if(u!=null){
+							MFGT.gotoFriendProfile(AddContactActivity.this,u);
+						}else {
+							CommonUtils.showLongToast(R.string.serach_user_fail);
+						}
+
+					}else {
+						CommonUtils.showLongToast(R.string.serach_user_fail);
+					}
+				}
 			}
-			
-			// TODO you can search the user from your app server here.
-			
-			//show the userame and add button if user exist
-			searchedUserLayout.setVisibility(View.VISIBLE);
-			nameText.setText(toAddUsername);
-			
-		} 
-	}	
-	
+
+			@Override
+			public void onError(String error) {
+				progressDialog.dismiss();
+				L.e(TAG,"error+"+error);
+				CommonUtils.showLongToast(R.string.serach_user_fail);
+			}
+		});
+	}
+
+
 	/**
 	 *  add contact
 	 * @param view

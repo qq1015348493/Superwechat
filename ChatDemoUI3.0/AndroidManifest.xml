@@ -95,6 +95,11 @@
             android:screenOrientation="portrait"
             android:theme="@style/horizontal_slide"
             android:windowSoftInputMode="adjustResize" />
+        <activity
+            android:name=".ui.FriendProfileActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/horizontal_slide"
+            android:windowSoftInputMode="adjustPan"/>
         <!-- 添加好友 -->
         <activity
             android:name=".ui.AddContactActivity"
