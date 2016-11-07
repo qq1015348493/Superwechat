@@ -89,6 +89,7 @@ public class FriendProfileActivity extends BaseActivity {
             case R.id.bt_friend_profile_chat:
                 break;
             case R.id.bt_friend_profile_add:
+                MFGT.gotoAddFriend(this,user);
                 break;
         }
     }

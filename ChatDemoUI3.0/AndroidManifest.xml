@@ -101,6 +101,10 @@
             android:theme="@style/horizontal_slide"
             android:windowSoftInputMode="adjustPan"/>
         <!-- 添加好友 -->
+        <activity android:name=".ui.AddFriendActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/horizontal_slide"
+            android:windowSoftInputMode="stateVisible"/>
         <activity
             android:name=".ui.AddContactActivity"
             android:screenOrientation="portrait"
@@ -481,8 +485,6 @@
         <meta-data
             android:name="com.baidu.lbsapi.API_KEY"
             android:value="3ecea51f560650b1ed8a4b99808f52e8" />
-        K
-        <activity android:name=".utils.ExitAppUtils"></activity>
     </application>
 
 </manifest>
