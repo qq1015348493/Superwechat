@@ -42,13 +42,13 @@ public class FriendProfileActivity extends BaseActivity {
             finish();
         }
         initView();
-        setUserInfo();
     }
 
     private void initView() {
         imgBack.setVisibility(View.VISIBLE);
         textTitle.setText(R.string.userinfo_txt_profile);
         textTitle.setVisibility(View.VISIBLE);
+        setUserInfo();
     }
 
     private void setUserInfo() {
