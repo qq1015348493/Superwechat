@@ -14,7 +14,6 @@ import com.hyphenate.easeui.domain.EaseUser;
 import com.hyphenate.easeui.domain.User;
 import com.hyphenate.easeui.model.EaseAtMessageHelper;
 import com.hyphenate.easeui.model.EaseNotifier;
-
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.content.Context;
@@ -183,7 +182,7 @@ public final class EaseUI {
     
     /**
      * set user profile provider
-     * @param provider
+     * @param userProvider
      */
     public void setUserProfileProvider(EaseUserProfileProvider userProvider){
         this.userProvider = userProvider;
