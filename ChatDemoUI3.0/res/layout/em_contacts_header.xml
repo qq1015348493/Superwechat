@@ -20,6 +20,6 @@
         app:contactItemName="@string/group_chat" />
 
 
-    
+
 
 </LinearLayout>
