@@ -178,7 +178,7 @@ public class ContactListFragment extends EaseContactListFragment {
         public void onClick(View v) {
             switch (v.getId()) {
             case R.id.application_item:
-                // 进入申请与通知页面
+                // 进入新的朋友
                 startActivity(new Intent(getActivity(), NewFriendsMsgActivity.class));
                 break;
             case R.id.group_item:
@@ -234,7 +234,7 @@ public class ContactListFragment extends EaseContactListFragment {
 	/**
 	 * delete contact
 	 * 
-	 * @param toDeleteUser
+	 * @param tobeDeleteUser
 	 */
 	public void deleteContact(final EaseUser tobeDeleteUser) {
 		String st1 = getResources().getString(R.string.deleting);

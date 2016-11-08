@@ -21,6 +21,7 @@ import cn.ucai.superwechat.R;
 import cn.ucai.superwechat.adapter.NewFriendsMsgAdapter;
 import cn.ucai.superwechat.db.InviteMessgeDao;
 import cn.ucai.superwechat.domain.InviteMessage;
+import cn.ucai.superwechat.utils.MFGT;
 
 import java.util.List;
 
@@ -46,6 +47,6 @@ public class NewFriendsMsgActivity extends BaseActivity {
 	}
 
 	public void back(View view) {
-		finish();
+		MFGT.finish(this);
 	}
 }

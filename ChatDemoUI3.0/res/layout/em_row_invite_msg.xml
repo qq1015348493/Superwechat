@@ -34,7 +34,15 @@
             android:layout_toRightOf="@id/avatar_container"
             android:textColor="#000"
             android:textSize="16sp" />
-
+         <TextView
+             android:id="@+id/nickname"
+             android:layout_width="wrap_content"
+             android:layout_height="wrap_content"
+             android:layout_marginLeft="8dp"
+             android:layout_marginTop="6dp"
+             android:layout_toRightOf="@id/name"
+             android:textColor="#000"
+             android:textSize="16sp" />
         <!--
          <TextView
         android:id="@+id/time"
