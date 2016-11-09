@@ -2,4 +2,5 @@
 <resources>
     <string name="toast_nick_not_modify">昵称未修改</string>
     <string name="error_not_find_user">没有该用户</string>
+    <string name="addcontact_friented_fail">添加联系人失败</string>
 </resources>

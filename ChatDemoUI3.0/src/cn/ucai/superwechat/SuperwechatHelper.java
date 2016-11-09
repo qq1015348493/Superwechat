@@ -26,6 +26,9 @@ import com.hyphenate.chat.EMMessage.Type;
 import com.hyphenate.chat.EMOptions;
 import com.hyphenate.chat.EMTextMessageBody;
 
+import cn.ucai.superwechat.bean.Result;
+import cn.ucai.superwechat.data.NetDao;
+import cn.ucai.superwechat.data.OkHttpUtils;
 import cn.ucai.superwechat.db.SuperwechatDBManager;
 import cn.ucai.superwechat.db.InviteMessgeDao;
 import cn.ucai.superwechat.db.UserDao;
@@ -38,8 +41,11 @@ import cn.ucai.superwechat.ui.ChatActivity;
 import cn.ucai.superwechat.ui.MainActivity;
 import cn.ucai.superwechat.ui.VideoCallActivity;
 import cn.ucai.superwechat.ui.VoiceCallActivity;
+import cn.ucai.superwechat.utils.CommonUtils;
 import cn.ucai.superwechat.utils.L;
 import cn.ucai.superwechat.utils.PreferenceManager;
+import cn.ucai.superwechat.utils.ResultUtils;
+
 import com.hyphenate.easeui.controller.EaseUI;
 import com.hyphenate.easeui.controller.EaseUI.EaseEmojiconInfoProvider;
 import com.hyphenate.easeui.controller.EaseUI.EaseSettingsProvider;
@@ -610,6 +616,7 @@ public class SuperwechatHelper {
             // save contact
             Map<String, EaseUser> localUsers = getContactList();
             Map<String, EaseUser> toAddUsers = new HashMap<String, EaseUser>();
+            Map<String, User> localAppUsers = getAppContactList();
             EaseUser user = new EaseUser(username);
 
             if (!localUsers.containsKey(username)) {
@@ -617,7 +624,30 @@ public class SuperwechatHelper {
             }
             toAddUsers.put(username, user);
             localUsers.putAll(toAddUsers);
+            if(!localAppUsers.containsKey(username)){
+                NetDao.addContact(appContext, EMClient.getInstance().getCurrentUser(), username, new OkHttpUtils.OnCompleteListener<String>() {
+                    @Override
+                    public void onSuccess(String s) {
+                        if(s!=null){
+                            Result result = ResultUtils.getResultFromJson(s,User.class);
+                            if(result!=null&&result.isRetMsg()){
+                                User u = (User) result.getRetData();
+                                saveAppContact(u);
+                            }else {
+                                CommonUtils.showLongToast(R.string.addcontact_friented_fail);
+                            }
+                        }else{
+                            CommonUtils.showLongToast(R.string.addcontact_friented_fail);
+                        }
+                    }
 
+                    @Override
+                    public void onError(String error) {
+                        L.e(TAG,"onContactAdded:  error="+error);
+                        CommonUtils.showLongToast(R.string.addcontact_friented_fail);
+                    }
+                });
+            }
             broadcastManager.sendBroadcast(new Intent(Constant.ACTION_CONTACT_CHANAGED));
         }
 

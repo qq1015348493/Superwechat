@@ -71,7 +71,7 @@ public class FriendProfileActivity extends BaseActivity {
     }
 
     private void setUserInfo() {
-        EaseUserUtils.setAppUserAvatar(this, user.getMUserName(), ivFriendProfileAvatar);
+        EaseUserUtils.setAppUserPathAvatar(this, user.getAvatar(), ivFriendProfileAvatar);
         EaseUserUtils.setAppUserNick(user.getMUserNick(), tvProfileNickname);
         EaseUserUtils.setAppUserNameWithInfo(user.getMUserName(), tvProfileUsername);
     }

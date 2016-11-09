@@ -230,7 +230,6 @@ public class UserProfileActivity extends BaseActivity implements OnClickListener
             case REQUESTCODE_CUTTING:
                 if (data != null) {
                     updateAppUserAvatar(data);
-                    setPicToView(data);
                 }
                 break;
             default:
