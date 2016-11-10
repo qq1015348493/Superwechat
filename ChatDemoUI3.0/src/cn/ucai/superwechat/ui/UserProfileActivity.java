@@ -286,7 +286,7 @@ public class UserProfileActivity extends BaseActivity implements OnClickListener
     /**
      * save the picture data
      *
-     * @param picdata
+     * @param picdataR
      */
     private void setPicToView(Intent picdata) {
         Bundle extras = picdata.getExtras();
@@ -390,7 +390,7 @@ public class UserProfileActivity extends BaseActivity implements OnClickListener
         Bundle extras = picdata.getExtras();
         if (extras != null) {
             Bitmap bitmap = extras.getParcelable("data");
-            String imgpath = EaseImageUtils.getImagePath(user.getMUserName()+ I.AVATAR_SUFFIX_JPG);
+            String imgpath = EaseImageUtils.getImagePath(user.getMUserName()+ I.AVATAR_SUFFIX_PNG);
             File file = new File(imgpath);
             L.e("file path="+file.getAbsolutePath());
             try {
