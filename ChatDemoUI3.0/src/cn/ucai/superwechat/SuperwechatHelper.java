@@ -632,6 +632,7 @@ public class SuperwechatHelper {
                             Result result = ResultUtils.getResultFromJson(s,User.class);
                             if(result!=null&&result.isRetMsg()){
                                 User u = (User) result.getRetData();
+                                L.e("onContactAdded    u="+u);
                                 saveAppContact(u);
                                 broadcastManager.sendBroadcast(new Intent(Constant.ACTION_CONTACT_CHANAGED));
                             }else {
@@ -649,11 +650,13 @@ public class SuperwechatHelper {
                     }
                 });
             }
+            broadcastManager.sendBroadcast(new Intent(Constant.ACTION_CONTACT_CHANAGED));
         }
 
         @Override
         public void onContactDeleted(String username) {
             Map<String, EaseUser> localUsers = SuperwechatHelper.getInstance().getContactList();
+            Map<String, User> localAppUsers = SuperwechatHelper.getInstance().getAppContactList();
             localUsers.remove(username);
             userDao.deleteContact(username);
             inviteMessgeDao.deleteMessage(username);
