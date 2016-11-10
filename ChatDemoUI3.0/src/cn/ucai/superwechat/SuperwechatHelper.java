@@ -633,6 +633,7 @@ public class SuperwechatHelper {
                             if(result!=null&&result.isRetMsg()){
                                 User u = (User) result.getRetData();
                                 saveAppContact(u);
+                                broadcastManager.sendBroadcast(new Intent(Constant.ACTION_CONTACT_CHANAGED));
                             }else {
                                 CommonUtils.showLongToast(R.string.addcontact_friented_fail);
                             }
@@ -648,7 +649,6 @@ public class SuperwechatHelper {
                     }
                 });
             }
-            broadcastManager.sendBroadcast(new Intent(Constant.ACTION_CONTACT_CHANAGED));
         }
 
         @Override
