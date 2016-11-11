@@ -454,12 +454,8 @@ public class MainActivity extends BaseActivity implements DMTabHost.OnCheckedCha
      */
     public void updateUnreadLabel() {
         int count = getUnreadMsgCountTotal();
-//		if (count > 0) {
-//			unreadLabel.setText(String.valueOf(count));
-//			unreadLabel.setVisibility(View.VISIBLE);
-//		} else {
-//			unreadLabel.setVisibility(View.INVISIBLE);
-//		}
+        L.e(TAG,"updateUnreadLabel,count="+count);
+        layoutTabhost.setUnreadCount(0,count);
     }
 
     /**
@@ -638,7 +634,7 @@ public class MainActivity extends BaseActivity implements DMTabHost.OnCheckedCha
             showAccountRemovedDialog();
         }
         boolean isback = intent.getBooleanExtra(I.ACTION_BACK_CONVERSATION,false);
-        L.e(TAG,"onResume  isback "+isback);
+        L.e(TAG,"onNewIntent  isback "+isback);
         if(isback){
             layoutTabhost.setChecked(0);
         }
