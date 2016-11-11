@@ -286,7 +286,7 @@ public class UserProfileActivity extends BaseActivity implements OnClickListener
     /**
      * save the picture data
      *
-     * @param picdataR
+     * @param picdata
      */
     private void setPicToView(Intent picdata) {
         Bundle extras = picdata.getExtras();

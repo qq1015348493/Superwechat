@@ -7,6 +7,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.hyphenate.chat.EMClient;
 import com.hyphenate.easeui.domain.User;
 import com.hyphenate.easeui.utils.EaseUserUtils;
 
@@ -16,6 +17,7 @@ import butterknife.OnClick;
 import cn.ucai.superwechat.I;
 import cn.ucai.superwechat.R;
 import cn.ucai.superwechat.SuperwechatHelper;
+import cn.ucai.superwechat.utils.L;
 import cn.ucai.superwechat.utils.MFGT;
 
 
@@ -64,7 +66,7 @@ public class FriendProfileActivity extends BaseActivity {
     }
 
     private void isFriend() {
-        if (SuperwechatHelper.getInstance().getAppContactList().containsKey(user.getMUserName())) {
+        if (user.getMUserName().equals(EMClient.getInstance().getCurrentUser())||SuperwechatHelper.getInstance().getAppContactList().containsKey(user.getMUserName())) {
             btFriendProfileSend.setVisibility(View.VISIBLE);
             btFriendProfileChat.setVisibility(View.VISIBLE);
         }else {
