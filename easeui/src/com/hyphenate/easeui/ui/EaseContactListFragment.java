@@ -214,8 +214,6 @@ public class EaseContactListFragment extends EaseBaseFragment {
         query.getText().clear();
         hideSoftKeyboard();
     }
-    
-
     @Override
     public void onDestroy() {
         
