@@ -6,6 +6,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.hyphenate.chat.EMClient;
 import com.hyphenate.easeui.domain.User;
@@ -94,7 +95,13 @@ public class FriendProfileActivity extends BaseActivity {
                 break;
             //视频
             case R.id.bt_friend_profile_chat:
-
+                if (!EMClient.getInstance().isConnected())
+                    Toast.makeText(this, R.string.not_connect_to_server, Toast.LENGTH_SHORT).show();
+                else {
+                    startActivity(new Intent(this, VideoCallActivity.class).putExtra("username", user.getMUserName())
+                            .putExtra("isComingCall", false));
+                    // videoCallBtn.setEnabled(false);
+                }
                 break;
             case R.id.bt_friend_profile_add:
                 MFGT.gotoAddFriend(this,user);
