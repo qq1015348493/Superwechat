@@ -58,6 +58,7 @@ import com.hyphenate.easeui.model.EaseAtMessageHelper;
 import com.hyphenate.easeui.model.EaseNotifier;
 import com.hyphenate.easeui.model.EaseNotifier.EaseNotificationInfoProvider;
 import com.hyphenate.easeui.utils.EaseCommonUtils;
+import com.hyphenate.easeui.utils.EaseUserUtils;
 import com.hyphenate.exceptions.HyphenateException;
 import com.hyphenate.util.EMLog;
 
@@ -1189,7 +1190,41 @@ public class SuperwechatHelper {
        }
        
        isSyncingBlackListWithServer = true;
-       
+
+       NetDao.loadContact(appContext, new OkHttpUtils.OnCompleteListener<String>() {
+           @Override
+           public void onSuccess(String s) {
+               if(s!=null){
+                   Result result = ResultUtils.getListResultFromJson(s,User.class);
+                   if(result!=null&&result.isRetMsg()){
+                       List<User> list = (List<User>) result.getRetData();
+                       if(list!=null&&list.size()>0){
+                           L.e(TAG,"list = "+list.size());
+                           Map<String, User> userlist = new HashMap<String, User>();
+                           for(User user: list){
+//                               EaseUserUtils.setAppUserInitialLetter(user);
+                               userlist.put(user.getMUserName(),user);
+                           }
+
+                           getAppContactList().clear();
+                           getAppContactList().putAll(userlist);
+
+                           UserDao dao  = new UserDao(appContext);
+                           List<User> users  = new ArrayList<User>(userlist.values());
+                           dao.saveAppContactList(users);
+
+
+                       }
+                   }
+               }
+           }
+
+           @Override
+           public void onError(String error) {
+
+           }
+       });
+
        new Thread(){
            @Override
            public void run(){
@@ -1203,7 +1238,20 @@ public class SuperwechatHelper {
                        notifyBlackListSyncListener(false);
                        return;
                    }
-                   
+                   Map<String, EaseUser> userlist = new HashMap<String, EaseUser>();
+                   for(String username: usernames){
+                       EaseUser user = new EaseUser(username);
+//                       EaseUserUtils.setUserInitialLetter(user);
+                       userlist.put(username,user);
+                   }
+
+                   getContactList().clear();
+                   getContactList().putAll(userlist);
+
+                   UserDao dao  = new UserDao(appContext);
+                   List<EaseUser> users  = new ArrayList<EaseUser>(userlist.values());
+                   dao.saveContactList(users);
+
                    demoModel.setBlacklistSynced(true);
                    
                    isBlackListSyncedWithServer = true;

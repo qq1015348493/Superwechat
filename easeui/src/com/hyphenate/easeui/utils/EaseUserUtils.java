@@ -144,4 +144,8 @@ public class EaseUserUtils {
         setAppUserName("微信号 :",mUserName,textView);
     }
 
+
+    public static void setUserInitialLetter(EaseUser user) {
+
+    }
 }
