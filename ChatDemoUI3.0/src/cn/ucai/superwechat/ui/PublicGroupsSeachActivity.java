@@ -21,7 +21,7 @@ public class PublicGroupsSeachActivity extends BaseActivity{
     private EditText idET;
     private TextView nameText;
     public static EMGroup searchedGroup;
-
+    //搜索公开群
     @Override
     protected void onCreate(Bundle arg0) {
         super.onCreate(arg0);

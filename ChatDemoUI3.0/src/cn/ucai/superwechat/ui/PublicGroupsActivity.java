@@ -57,7 +57,7 @@ public class PublicGroupsActivity extends BaseActivity {
     private TextView footLoadingText;
     private Button searchBtn;
     
-
+    //公开群聊
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);

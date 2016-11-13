@@ -54,6 +54,7 @@ import cn.ucai.superwechat.R;
 import cn.ucai.superwechat.bean.Result;
 import cn.ucai.superwechat.data.NetDao;
 import cn.ucai.superwechat.data.OkHttpUtils;
+import cn.ucai.superwechat.utils.CommonUtils;
 import cn.ucai.superwechat.utils.L;
 import cn.ucai.superwechat.utils.ResultUtils;
 public class NewGroupActivity extends BaseActivity {
@@ -71,6 +72,7 @@ public class NewGroupActivity extends BaseActivity {
     private TextView secondTextView;
     ProgressDialog dialog;
     File Avatarfile = null;
+    EMGroup emGroup = null;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -172,8 +174,8 @@ public class NewGroupActivity extends BaseActivity {
                     } else {
                         option.style = memberCheckbox.isChecked() ? EMGroupStyle.EMGroupStylePrivateMemberCanInvite : EMGroupStyle.EMGroupStylePrivateOnlyOwnerInvite;
                     }
-                    EMGroup emGroup = EMClient.getInstance().groupManager().createGroup(groupName, desc, members, reason, option);
-                    creatAppGroup(emGroup);
+                    emGroup = EMClient.getInstance().groupManager().createGroup(groupName, desc, members, reason, option);
+                    creatAppGroup();
                 } catch (final HyphenateException e) {
                     runOnUiThread(new Runnable() {
                         public void run() {
@@ -187,48 +189,68 @@ public class NewGroupActivity extends BaseActivity {
         }).start();
     }
 
-    private void creatAppGroup(EMGroup emGroup) {
-        if(Avatarfile==null){
-            NetDao.createGroup(this, emGroup, new OkHttpUtils.OnCompleteListener<String>() {
-                @Override
-                public void onSuccess(String s) {
-                    afterCreateAppGroup(s);
-                }
-
-                @Override
-                public void onError(String error) {
-                    progressDialog.dismiss();
-                }
-            });
-        }else {
-            NetDao.createGroup(this, emGroup, Avatarfile, new OkHttpUtils.OnCompleteListener<String>() {
-                @Override
-                public void onSuccess(String s) {
-                    afterCreateAppGroup(s);
-                }
-
-                @Override
-                public void onError(String error) {
-                    progressDialog.dismiss();
-                }
-            });
+    private void creatAppGroup() {
+        if (Avatarfile == null) {
+            NetDao.createGroup(this, emGroup,listener);
+        } else {
+            NetDao.createGroup(this, emGroup, Avatarfile, listener);
         }
     }
-
-    private void afterCreateAppGroup(String s) {
-        if(s!=null){
-            Result result = ResultUtils.getResultFromJson(s,Group.class);
-            L.e(TAG,"result:"+result);
-            if(result!=null&&result.isRetMsg()){
-                L.e(TAG,"result++++++:"+result);
-                Group group = (Group) result.getRetData();
-                createGroupSuccess();
+    OkHttpUtils.OnCompleteListener<String> listener = new OkHttpUtils.OnCompleteListener<String>() {
+        @Override
+        public void onSuccess(String s) {
+            if(s!=null){
+                Result result = ResultUtils.getResultFromJson(s,Group.class);
+                L.e(TAG,"result:"+result);
+                if(result!=null&&result.isRetMsg()){
+                    if(emGroup!=null&&emGroup.getMembers()!=null&&emGroup.getMembers().size()>1){
+                        addGroupMembers();
+                    }else {
+                        createGroupSuccess();
+                    }
+                }else {
+                    progressDialog.dismiss();
+                    CommonUtils.showLongToast(R.string.Failed_to_create_groups);
+                }
             }else {
                 progressDialog.dismiss();
+                CommonUtils.showLongToast(R.string.Failed_to_create_groups);
             }
-        }else {
+        }
+
+
+        @Override
+        public void onError(String error) {
+            CommonUtils.showLongToast(R.string.Failed_to_create_groups);
             progressDialog.dismiss();
         }
+
+    };
+
+    private void addGroupMembers() {
+        NetDao.addGroupMembers(this, emGroup, new OkHttpUtils.OnCompleteListener<String>() {
+            @Override
+            public void onSuccess(String s) {
+                if(s!=null){
+                    Result result = ResultUtils.getResultFromJson(s,Group.class);
+                    if(result!=null&&result.isRetMsg()){
+                        createGroupSuccess();
+                    }else {
+                        progressDialog.dismiss();
+                        CommonUtils.showLongToast(R.string.Failed_to_create_groups);
+                    }
+                }else {
+                    progressDialog.dismiss();
+                    CommonUtils.showLongToast(R.string.Failed_to_create_groups);
+                }
+            }
+
+            @Override
+            public void onError(String error) {
+                progressDialog.dismiss();
+                CommonUtils.showLongToast(R.string.Failed_to_create_groups);
+            }
+        });
     }
 
     private void setPicToView(Intent picdata) {
