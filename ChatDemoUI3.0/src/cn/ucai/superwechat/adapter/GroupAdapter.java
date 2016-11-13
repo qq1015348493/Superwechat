@@ -27,12 +27,15 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.hyphenate.chat.EMGroup;
+import com.hyphenate.easeui.domain.EaseUser;
+import com.hyphenate.easeui.utils.EaseUserUtils;
+
 import cn.ucai.superwechat.R;
 
 import java.util.List;
 
 public class GroupAdapter extends ArrayAdapter<EMGroup> {
-
+	Context mcontext;
 	private LayoutInflater inflater;
 	private String newGroup;
 	private String addPublicGroup;
@@ -40,6 +43,7 @@ public class GroupAdapter extends ArrayAdapter<EMGroup> {
 	public GroupAdapter(Context context, int res, List<EMGroup> groups) {
 		super(context, res, groups);
 		this.inflater = LayoutInflater.from(context);
+		mcontext = context;
 		newGroup = context.getResources().getString(R.string.The_new_group_chat);
 		addPublicGroup = context.getResources().getString(R.string.add_public_group_chat);
 	}
@@ -111,7 +115,8 @@ public class GroupAdapter extends ArrayAdapter<EMGroup> {
 				convertView = inflater.inflate(R.layout.em_row_group, parent, false);
 			}
 			((TextView) convertView.findViewById(R.id.name)).setText(getItem(position - 3).getGroupName());
-
+			EaseUserUtils.setAppGroupAvatar(mcontext,getItem(position-3).getGroupId(),
+					(ImageView) convertView.findViewById(R.id.avatar));
 		}
 
 		return convertView;
