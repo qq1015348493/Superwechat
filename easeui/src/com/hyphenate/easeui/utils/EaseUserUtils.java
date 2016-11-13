@@ -1,5 +1,6 @@
 package com.hyphenate.easeui.utils;
 
+import android.app.Activity;
 import android.content.Context;
 import android.support.v4.app.FragmentActivity;
 import android.widget.ImageView;
@@ -136,7 +137,7 @@ public class EaseUserUtils {
         }
     }
 
-    public static void setCurentAppUserAvatar(FragmentActivity activity, ImageView imageView) {
+    public static void setCurentAppUserAvatar(Activity activity, ImageView imageView) {
         String username = EMClient.getInstance().getCurrentUser();
         setAppUserAvatar(activity,username,imageView);
     }
