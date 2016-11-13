@@ -34,6 +34,8 @@ import com.hyphenate.chat.EMGroup;
 import cn.ucai.superwechat.Constant;
 import cn.ucai.superwechat.R;
 import cn.ucai.superwechat.adapter.GroupAdapter;
+import cn.ucai.superwechat.utils.MFGT;
+
 import com.hyphenate.exceptions.HyphenateException;
 
 import java.util.List;
@@ -76,13 +78,13 @@ public class GroupsActivity extends BaseActivity {
 		inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
 		grouplist = EMClient.getInstance().groupManager().getAllGroups();
 		groupListView = (ListView) findViewById(R.id.list);
-		//show group list
-        groupAdapter = new GroupAdapter(this, 1, grouplist);
-        groupListView.setAdapter(groupAdapter);
+		initView();
+		setListener();
+
 		
-		swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_layout);
-		swipeRefreshLayout.setColorSchemeResources(R.color.holo_blue_bright, R.color.holo_green_light,
-		                R.color.holo_orange_light, R.color.holo_red_light);
+	}
+
+	private void setListener() {
 		//pull down to refresh
 		swipeRefreshLayout.setOnRefreshListener(new OnRefreshListener() {
 
@@ -102,7 +104,7 @@ public class GroupsActivity extends BaseActivity {
 				}.start();
 			}
 		});
-		
+
 		groupListView.setOnItemClickListener(new OnItemClickListener() {
 
 			@Override
@@ -136,7 +138,16 @@ public class GroupsActivity extends BaseActivity {
 				return false;
 			}
 		});
-		
+	}
+
+	private void initView() {
+//show group list
+		groupAdapter = new GroupAdapter(this, 1, grouplist);
+		groupListView.setAdapter(groupAdapter);
+
+		swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_layout);
+		swipeRefreshLayout.setColorSchemeResources(R.color.holo_blue_bright, R.color.holo_green_light,
+				R.color.holo_orange_light, R.color.holo_red_light);
 	}
 
 	@Override
@@ -164,6 +175,6 @@ public class GroupsActivity extends BaseActivity {
 	}
 
 	public void back(View view) {
-		finish();
+		MFGT.finish(this);
 	}
 }
