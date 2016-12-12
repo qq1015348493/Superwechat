@@ -80,4 +80,6 @@ dependencies {
     apt 'com.jakewharton:butterknife-compiler:8.4.0'
     compile 'com.android.support:recyclerview-v7:23.4.0'
     compile project(':ulive-android-sdk')
+    compile 'com.android.support:design:23.4.0'
+    compile 'com.github.florent37:viewanimator:1.0.4'
 }

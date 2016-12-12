@@ -25,4 +25,15 @@
     <color name="tab_def_selected_color">#ffff7800</color>
     <color name="tab_top_title_normal_color">#ffffffff</color>
     <color name="tab_top_title_selected_color">#ffff7800</color>
+
+    <color name="common_btn_black_pressed">#111010</color>
+    <color name="black_323232">#323232</color>
+    <color name="common_btn_black_normal">#1A1A1A</color>
+    <color name="common_btn_blue_pressed">#1887cd</color>
+    <color name="common_btn_blue_normal">#24AAFF</color>
+
+    <color name="common_btn_white_normal">@color/common_white</color>
+    <color name="common_btn_white_pressed">#ccc</color>
+
+    <color name="common_black">#3B3B3B</color>
 </resources>

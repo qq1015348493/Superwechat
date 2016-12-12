@@ -8,4 +8,6 @@
     <color name="shadow">#25808080</color>
     <color name="dialog_bg">#f5f5f5</color>
     <color name="placeholder">#ddd</color>
+    <color name="color_progress">#2196F3</color>
+    <color name="common_white">#fff</color>
 </resources>
