@@ -72,7 +72,7 @@ public class ContactListFragment extends EaseContactListFragment {
         applicationItem = (ContactItemView) headerView.findViewById(R.id.application_item);
         applicationItem.setOnClickListener(clickListener);
         headerView.findViewById(R.id.group_item).setOnClickListener(clickListener);
-//        headerView.findViewById(R.id.chat_room_item).setOnClickListener(clickListener);
+        headerView.findViewById(R.id.chat_room_item).setOnClickListener(clickListener);
 //        headerView.findViewById(R.id.robot_item).setOnClickListener(clickListener);
         listView.addHeaderView(headerView);
         //add loading view
@@ -81,7 +81,7 @@ public class ContactListFragment extends EaseContactListFragment {
 
         registerForContextMenu(listView);
     }
-    
+
     @Override
     public void refresh() {
         Map<String, User> m = SuperwechatHelper.getInstance().getAppContactList();
@@ -100,14 +100,14 @@ public class ContactListFragment extends EaseContactListFragment {
             applicationItem.hideUnreadMsgView();
         }
     }
-    
-    
+
+
     @SuppressWarnings("unchecked")
     @Override
     protected void setUpView() {
         titleBar.setRightImageResource(R.drawable.em_add);
         titleBar.setRightLayoutClickListener(new OnClickListener() {
-            
+
             @Override
             public void onClick(View v) {
 //                startActivity(new Intent(getActivity(), AddContactActivity.class));
@@ -134,7 +134,7 @@ public class ContactListFragment extends EaseContactListFragment {
             }
         });
 
-        
+
         // 进入添加好友页
         titleBar.getRightLayout().setOnClickListener(new OnClickListener() {
 
@@ -143,24 +143,24 @@ public class ContactListFragment extends EaseContactListFragment {
                 startActivity(new Intent(getActivity(), AddContactActivity.class));
             }
         });
-        
-        
+
+
         contactSyncListener = new ContactSyncListener();
         SuperwechatHelper.getInstance().addSyncContactListener(contactSyncListener);
-        
+
         blackListSyncListener = new BlackListSyncListener();
         SuperwechatHelper.getInstance().addSyncBlackListListener(blackListSyncListener);
-        
+
         contactInfoSyncListener = new ContactInfoSyncListener();
         SuperwechatHelper.getInstance().getUserProfileManager().addSyncContactInfoListener(contactInfoSyncListener);
-        
+
         if (SuperwechatHelper.getInstance().isContactsSyncedWithServer()) {
             loadingView.setVisibility(View.GONE);
         } else if (SuperwechatHelper.getInstance().isSyncingContactsWithServer()) {
             loadingView.setVisibility(View.VISIBLE);
         }
     }
-    
+
     @Override
     public void onDestroy() {
         super.onDestroy();
@@ -168,17 +168,17 @@ public class ContactListFragment extends EaseContactListFragment {
             SuperwechatHelper.getInstance().removeSyncContactListener(contactSyncListener);
             contactSyncListener = null;
         }
-        
+
         if(blackListSyncListener != null){
             SuperwechatHelper.getInstance().removeSyncBlackListListener(blackListSyncListener);
         }
-        
+
         if(contactInfoSyncListener != null){
             SuperwechatHelper.getInstance().getUserProfileManager().removeSyncContactInfoListener(contactInfoSyncListener);
         }
     }
-    
-	
+
+
 	protected class HeaderItemClickListener implements OnClickListener{
 
         @Override
@@ -192,11 +192,11 @@ public class ContactListFragment extends EaseContactListFragment {
                 // 进入群聊列表页面
                 startActivity(new Intent(getActivity(), GroupsActivity.class));
                 break;
-            /*case R.id.chat_room_item:
+            case R.id.chat_room_item:
                 //进入聊天室列表页面
                 startActivity(new Intent(getActivity(), PublicChatRoomsActivity.class));
                 break;
-            case R.id.robot_item:
+            /*case R.id.robot_item:
                 //进入Robot列表页面
                 startActivity(new Intent(getActivity(), RobotsActivity.class));
                 break;*/
