@@ -1,10 +1,10 @@
 /**
  * Copyright (C) 2016 Hyphenate Inc. All rights reserved.
- *
+ * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *     http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -15,8 +15,10 @@
 package cn.ucai.superwechat.ui;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.RecyclerView.ViewHolder;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,60 +31,62 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.bumptech.glide.Glide;
 import com.hyphenate.EMChatRoomChangeListener;
 import com.hyphenate.chat.EMChatRoom;
 import com.hyphenate.chat.EMClient;
 import com.hyphenate.chat.EMCursorResult;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import cn.ucai.superwechat.R;
-
+import com.hyphenate.easeui.utils.EaseUserUtils;
 import com.hyphenate.exceptions.HyphenateException;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class PublicChatRoomsActivity extends BaseActivity {
-	private ProgressBar pb;
-	private RecyclerView listView;
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import cn.ucai.superwechat.Constant;
+import cn.ucai.superwechat.R;
+import cn.ucai.superwechat.data.LiveRoom;
+import cn.ucai.superwechat.utils.Clazz2;
 
-	private List<EMChatRoom> chatRoomList;
-	private boolean isLoading;
-	private boolean isFirstLoading = true;
-	private boolean hasMoreData = true;
-	private String cursor;
-	private final int pagesize = 50;
+public class PublicChatRoomsActivity extends BaseActivity {
+    private ProgressBar pb;
+    private RecyclerView listView;
+
+    private List<EMChatRoom> chatRoomList;
+    private boolean isLoading;
+    private boolean isFirstLoading = true;
+    private boolean hasMoreData = true;
+    private String cursor;
+    private final int pagesize = 50;
     private LinearLayout footLoadingLayout;
     private ProgressBar footLoadingPB;
     private TextView footLoadingText;
     private EditText etSearch;
     private ImageButton ibClean;
     private List<EMChatRoom> rooms;
-	PhotoAdapter mAdapter;
+    PhotoAdapter mAdapter;
 
-	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		setContentView(R.layout.em_activity_public_groups);
-		etSearch = (EditText)findViewById(R.id.query);
-		ibClean = (ImageButton)findViewById(R.id.search_clear);
-		etSearch.setHint(R.string.search);
-		InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-		pb = (ProgressBar) findViewById(R.id.progressBar);
-		listView = (RecyclerView) findViewById(R.id.recycleview);
-		TextView title = (TextView) findViewById(R.id.tv_title);
-		title.setText(getResources().getString(R.string.chat_room));
-		chatRoomList = new ArrayList<EMChatRoom>();
-		rooms = new ArrayList<EMChatRoom>();
-		
-		View footView = getLayoutInflater().inflate(R.layout.em_listview_footer_view, listView, false);
-        footLoadingLayout = (LinearLayout) footView.findViewById(R.id.loading_layout);
-        footLoadingPB = (ProgressBar)footView.findViewById(R.id.loading_bar);
-        footLoadingText = (TextView) footView.findViewById(R.id.loading_text);
-        footLoadingLayout.setVisibility(View.GONE);
-        
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.em_activity_public_groups);
+        etSearch = (EditText) findViewById(R.id.query);
+        ibClean = (ImageButton) findViewById(R.id.search_clear);
+        etSearch.setHint(R.string.search);
+        InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        pb = (ProgressBar) findViewById(R.id.progressBar);
+        listView = (RecyclerView) findViewById(R.id.recycleview);
+        TextView title = (TextView) findViewById(R.id.tv_title);
+        title.setText(getResources().getString(R.string.chat_room));
+        chatRoomList = new ArrayList<EMChatRoom>();
+        rooms = new ArrayList<EMChatRoom>();
+
+//		View footView = getLayoutInflater().inflate(R.layout.em_listview_footer_view, listView, false);
+//        footLoadingLayout = (LinearLayout) footView.findViewById(R.id.loading_layout);
+//        footLoadingPB = (ProgressBar)footView.findViewById(R.id.loading_bar);
+//        footLoadingText = (TextView) footView.findViewById(R.id.loading_text);
+//        footLoadingLayout.setVisibility(View.GONE);
+//
 //        etSearch.addTextChangedListener(new TextWatcher() {
 //
 //			@Override
@@ -106,52 +110,52 @@ public class PublicChatRoomsActivity extends BaseActivity {
 //			public void afterTextChanged(Editable s) {
 //			}
 //		});
-        
+
         ibClean.setOnClickListener(new View.OnClickListener() {
-			
-			@Override
-			public void onClick(View v) {
-				etSearch.getText().clear();
-				hideSoftKeyboard();
-			}
-		});
+
+            @Override
+            public void onClick(View v) {
+                etSearch.getText().clear();
+                hideSoftKeyboard();
+            }
+        });
 
         loadAndShowData();
-        
-        EMClient.getInstance().chatroomManager().addChatRoomChangeListener(new EMChatRoomChangeListener(){
+
+        EMClient.getInstance().chatroomManager().addChatRoomChangeListener(new EMChatRoomChangeListener() {
             @Override
             public void onChatRoomDestroyed(String roomId, String roomName) {
                 chatRoomList.clear();
-                if(mAdapter != null){
-                    runOnUiThread(new Runnable(){
+                if (mAdapter != null) {
+                    runOnUiThread(new Runnable() {
 
                         @Override
                         public void run() {
-                            if(mAdapter != null){
+                            if (mAdapter != null) {
                                 mAdapter.notifyDataSetChanged();
                                 loadAndShowData();
                             }
                         }
-                        
+
                     });
                 }
             }
 
             @Override
-            public void onMemberJoined(String roomId, String participant) {                
+            public void onMemberJoined(String roomId, String participant) {
             }
 
             @Override
             public void onMemberExited(String roomId, String roomName,
-                    String participant) {
-                
+                                       String participant) {
+
             }
 
             @Override
             public void onMemberKicked(String roomId, String roomName,
-                    String participant) {
+                                       String participant) {
             }
-            
+
         });
 
 //        listView.setOnItemClickListener(new OnItemClickListener() {
@@ -165,30 +169,26 @@ public class PublicChatRoomsActivity extends BaseActivity {
 //
 //            }
 //        });
-//        listView.setOnScrollListener(new OnScrollListener() {
-//
-//            @Override
-//            public void onScrollStateChanged(AbsListView view, int scrollState) {
-//                if(scrollState == OnScrollListener.SCROLL_STATE_IDLE){
-//                    if(cursor != null){
-//                        int lasPos = view.getLastVisiblePosition();
-//                        if(hasMoreData && !isLoading && lasPos == listView.getCount()-1){
-//                            loadAndShowData();
-//                        }
-//                    }
-//                }
-//            }
-//
-//            @Override
-//            public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
-//
-//            }
-//        });
-        
-	}
-	
-	private void loadAndShowData(){
-		new Thread(new Runnable() {
+
+    }
+
+    private void setPullUpListener() {
+        listView.setOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+            }
+
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+                loadAndShowData();
+            }
+        });
+    }
+
+    private void loadAndShowData() {
+        new Thread(new Runnable() {
 
             public void run() {
                 try {
@@ -200,17 +200,17 @@ public class PublicChatRoomsActivity extends BaseActivity {
 
                         public void run() {
                             chatRoomList.addAll(chatRooms);
-                            if(chatRooms.size() != 0){
+                            if (chatRooms.size() != 0) {
                                 cursor = result.getCursor();
                             }
-                            if(isFirstLoading){
+                            if (isFirstLoading) {
                                 pb.setVisibility(View.INVISIBLE);
                                 isFirstLoading = false;
-                                mAdapter = new PhotoAdapter(PublicChatRoomsActivity.this, chatRoomList);
+                                mAdapter = new PhotoAdapter(PublicChatRoomsActivity.this, Clazz2.EMChatRoom2LiveRoom(chatRoomList));
                                 listView.setAdapter(mAdapter);
                                 rooms.addAll(chatRooms);
-                            }else{
-                                if(chatRooms.size() < pagesize){
+                            } else {
+                                if (chatRooms.size() < pagesize) {
                                     hasMoreData = false;
                                     footLoadingLayout.setVisibility(View.VISIBLE);
                                     footLoadingPB.setVisibility(View.GONE);
@@ -234,15 +234,15 @@ public class PublicChatRoomsActivity extends BaseActivity {
                 }
             }
         }).start();
-	}
+    }
 
-	public void search(View view) {
-	}
+    public void search(View view) {
+    }
 
-	/**
-	 * adapter
-	 *
-	 */
+    /**
+     * adapter
+     *
+     */
 //	private class ChatRoomAdapter extends ArrayAdapter<EMChatRoom> {
 //
 //		private LayoutInflater inflater;
@@ -304,67 +304,117 @@ public class PublicChatRoomsActivity extends BaseActivity {
 //
 //		}
 //	}
-	
-	public void back(View view){
-		finish();
-	}
+    public void back(View view) {
+        finish();
+    }
 
-	static class PhotoAdapter extends RecyclerView.Adapter<PhotoViewHolder> {
+    static class PhotoAdapter extends RecyclerView.Adapter{
+        private final List<LiveRoom> liveRoomList;
+        private final Context context;
 
-		private final List<EMChatRoom> liveRoomList;
-		private final Context context;
+        boolean isMore;
 
-		public PhotoAdapter(Context context, List<EMChatRoom> liveRoomList){
-			this.liveRoomList = liveRoomList;
-			this.context = context;
-		}
-		@Override
-		public PhotoViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-			final PhotoViewHolder holder = new PhotoViewHolder(LayoutInflater.from(context).
-					inflate(R.layout.layout_livelist_item, parent, false));
+        public boolean isMore() {
+            return isMore;
+        }
 
-//			holder.itemView.setOnClickListener(new View.OnClickListener() {
-//				@Override
-//				public void onClick(View v) {
-//					final int position = holder.getAdapterPosition();
-//					if (position == RecyclerView.NO_POSITION) return;
-//					context.startActivity(new Intent(context, LiveDetailsActivity.class)
-//							.putExtra("liveroom", liveRoomList.get(position)));
-//				}
-//			});
-			return holder;
-		}
+        public void setMore(boolean ismore) {
+            isMore = ismore;
+            notifyDataSetChanged();
+        }
 
-		@Override
-		public void onBindViewHolder(PhotoViewHolder holder, int position) {
-            String URL = "http://101.251.196.90:8000/SuperWeChatServerV2.0/downloadAvatar?name_or_hxid=";
-            String end = "&avatarType=chatroom_icon&m_avatar_suffix=.jpg";
-			EMChatRoom liveRoom = liveRoomList.get(position);
-			holder.anchor.setText(liveRoom.getName());
-			holder.audienceNum.setText(liveRoom.getAffiliationsCount() + "人");
+        private int getFootString() {
+            return isMore ? R.string.loading_more : R.string.load_more_end;
+        }
 
-			Glide.with(context)
-					.load(URL+liveRoomList.get(position).getId()+end)
-					.placeholder(R.color.placeholder)
-					.into(holder.imageView);
-		}
+        public PhotoAdapter(Context context, List<LiveRoom> liveRoomList) {
+            this.liveRoomList = liveRoomList;
+            this.context = context;
+        }
 
-		@Override
-		public int getItemCount() {
-			return liveRoomList.size();
-		}
-	}
+        @Override
+        public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            RecyclerView.ViewHolder holder = null;
+            if (viewType == Constant.ACTION_TYPE_FOOTER) {
+                holder = new FooterViewHolder(LayoutInflater.from(context).inflate(R.layout.em_listview_footer_view, parent, false));
+            } else {
+                holder = new PhotoViewHolder(LayoutInflater.from(context).
+                        inflate(R.layout.layout_livelist_item, parent, false));
+            }
+            return holder;
+        }
 
-	static class PhotoViewHolder extends RecyclerView.ViewHolder {
-		@BindView(R.id.photo)
-		ImageView imageView;
-		@BindView(R.id.author)
-		TextView anchor;
-		@BindView(R.id.audience_num) TextView audienceNum;
+        @Override
+        public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+            if(getItemViewType(position)==Constant.ACTION_TYPE_FOOTER){
+                FooterViewHolder vh = (FooterViewHolder) holder;
+                vh.loadingText.setText(getFootString());
+                vh.loadingBar.setVisibility(isMore?View.VISIBLE:View.GONE);
+            }else {
+                final PhotoViewHolder vh = (PhotoViewHolder) holder;
+                LiveRoom liveRoom = liveRoomList.get(position);
+                vh.anchor.setText(liveRoom.getName());
+                vh.audienceNum.setText(liveRoom.getAudienceNum()+"人");
+                EaseUserUtils.setCover(context, liveRoom.getCover(), vh.imageView);
+//                holder.itemView.setOnClickListener(new View.OnClickListener() {
+//                    @Override
+//                    public void onClick(View v) {
+//                        final int position = vh.getAdapterPosition();
+//                        if (position == RecyclerView.NO_POSITION) return;
+////                        LiveRoom room = Clazz2.EMChatRoom2LiveRoom(liveRoomList.get(position));
+//                        Intent intent;
+//                        if (EMClient.getInstance().getCurrentUser() == room.getAnchorId()) {
+//                            intent = new Intent(context, StartLiveActivity.class);
+//                        } else {
+//                            intent = new Intent(context, LiveDetailsActivity.class);
+//                        }
+//                        intent.putExtra("liveroom", room);
+//                        context.startActivity(intent);
+//                    }
+//                });
+            }
 
-		public PhotoViewHolder(View itemView) {
-			super(itemView);
-			ButterKnife.bind(this, itemView);
-		}
-	}
+        }
+
+        @Override
+        public int getItemCount() {
+            return liveRoomList.size()+1;
+        }
+
+        @Override
+        public int getItemViewType(int position) {
+            if(position == getItemCount()-1){
+                return Constant.ACTION_TYPE_FOOTER;
+            }else {
+                return Constant.ACTION_TYPE_ITEM;
+            }
+        }
+
+        static class FooterViewHolder extends RecyclerView.ViewHolder {
+            @BindView(R.id.loading_bar)
+            ProgressBar loadingBar;
+            @BindView(R.id.loading_text)
+            TextView loadingText;
+            @BindView(R.id.loading_layout)
+            LinearLayout loadingLayout;
+
+            FooterViewHolder(View view) {
+                super(view);
+                ButterKnife.bind(this, view);
+            }
+        }
+        static class PhotoViewHolder extends RecyclerView.ViewHolder {
+            @BindView(R.id.photo)
+            ImageView imageView;
+            @BindView(R.id.author)
+            TextView anchor;
+            @BindView(R.id.audience_num)
+            TextView audienceNum;
+
+            public PhotoViewHolder(View itemView) {
+                super(itemView);
+                ButterKnife.bind(this, itemView);
+            }
+        }
+    }
 }
