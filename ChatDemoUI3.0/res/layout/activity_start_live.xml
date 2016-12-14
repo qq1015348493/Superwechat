@@ -34,6 +34,7 @@
           android:layout_height="30dp"
           app:ease_shape_type="round"
           android:src="@drawable/ease_default_avatar"
+          android:id="@+id/start_live_image"
           />
 
       <TextView
