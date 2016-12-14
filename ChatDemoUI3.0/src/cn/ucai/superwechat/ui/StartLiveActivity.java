@@ -31,6 +31,8 @@ import com.ucloud.live.UEasyStreaming;
 import com.ucloud.live.UStreamingProfile;
 import com.ucloud.live.widget.UAspectFrameLayout;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.Random;
 
@@ -84,6 +86,8 @@ public class StartLiveActivity extends LiveBaseActivity
 
     boolean isStarted;
 
+    Date startdate = new Date();
+
     private Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
@@ -94,7 +98,8 @@ public class StartLiveActivity extends LiveBaseActivity
             }
         }
     };
-
+    private long aTime = 8*3600*1000;
+    private long starttime;
     //203138620012364216
     @Override
     protected void onActivityCreate(@Nullable Bundle savedInstanceState) {
@@ -198,6 +203,7 @@ public class StartLiveActivity extends LiveBaseActivity
     @OnClick(R.id.btn_start)
     void startLive() {
         //demo为了测试方便，只有指定的账号才能开启直播
+         starttime = System.currentTimeMillis();
         if (liveId == null) {
             String[] anchorIds = TestDataRepository.anchorIds;
             StringBuilder sb = new StringBuilder();
@@ -235,6 +241,7 @@ public class StartLiveActivity extends LiveBaseActivity
      */
     @OnClick(R.id.img_bt_close)
     void closeLive() {
+
         mEasyStreaming.stopRecording();
         if (!isStarted) {
             finish();
@@ -258,17 +265,26 @@ public class StartLiveActivity extends LiveBaseActivity
     private void showConfirmCloseLayout() {
         //显示封面
         coverImage.setVisibility(View.VISIBLE);
-        List<LiveRoom> liveRoomList = TestDataRepository.getLiveRoomList();
-        for (LiveRoom liveRoom : liveRoomList) {
-            if (liveRoom.getId().equals(liveId)) {
-                EaseUserUtils.setCover(this, liveRoom.getCover(), coverImage);
-//        coverImage.setImageResource(liveRoom.getCover());
-            }
-        }
+        long endtime = System.currentTimeMillis();
+        long livetime= endtime - starttime-aTime;
+        SimpleDateFormat format = new SimpleDateFormat("HH:mm:ss");
+
+        String t = format.format(new Date(livetime));
+//        List<LiveRoom> liveRoomList = TestDataRepository.getLiveRoomList();
+//        for (LiveRoom liveRoom : liveRoomList) {
+//            if (liveRoom.getId().equals(liveId)) {
+//                EaseUserUtils.setCover(this, liveRoom.getCover(), coverImage);
+////        coverImage.setImageResource(liveRoom.getCover());
+//            }
+//        }
         View view = liveEndLayout.inflate();
         Button closeConfirmBtn = (Button) view.findViewById(R.id.live_close_confirm);
         TextView usernameView = (TextView) view.findViewById(R.id.tv_username);
+        ImageView closeiv = (ImageView) view.findViewById(R.id.close_iv);
+        TextView LiveTime = (TextView) view.findViewById(R.id.live_time);
         usernameView.setText(EMClient.getInstance().getCurrentUser());
+        LiveTime.setText(t);
+        EaseUserUtils.setAppUserAvatar(this,EMClient.getInstance().getCurrentUser(),closeiv);
         closeConfirmBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
