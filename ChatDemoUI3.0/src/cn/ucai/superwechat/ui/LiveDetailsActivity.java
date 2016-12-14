@@ -31,13 +31,32 @@ import cn.ucai.superwechat.data.LiveRoom;
 public class LiveDetailsActivity extends LiveBaseActivity implements UVideoView.Callback {
 
     String rtmpPlayStreamUrl = "rtmp://vlive3.rtmp.cdn.ucloud.com.cn/ucloud/";
+    @BindView(R.id.live_details_iv)
+    ImageView liveDetailsIv;
+    @BindView(R.id.screenshot_image)
+    ImageView screenshotImage;
+    @BindView(R.id.comment_image)
+    ImageView commentImage;
+    @BindView(R.id.present_image)
+    ImageView presentImage;
+    @BindView(R.id.chat_image)
+    ImageView chatImage;
+    @BindView(R.id.message_container)
+    RelativeLayout messageContainer;
+    @BindView(R.id.root_layout)
+    RelativeLayout rootLayout;
     private UVideoView mVideoView;
 
-    @BindView(R.id.loading_layout) RelativeLayout loadingLayout;
-    @BindView(R.id.progress_bar) ProgressBar progressBar;
-    @BindView(R.id.loading_text) TextView loadingText;
-    @BindView(R.id.cover_image) ImageView coverView;
-    @BindView(R.id.tv_username) TextView usernameView;
+    @BindView(R.id.loading_layout)
+    RelativeLayout loadingLayout;
+    @BindView(R.id.progress_bar)
+    ProgressBar progressBar;
+    @BindView(R.id.loading_text)
+    TextView loadingText;
+    @BindView(R.id.cover_image)
+    ImageView coverView;
+    @BindView(R.id.tv_username)
+    TextView usernameView;
 
     @Override
     protected void onActivityCreate(@Nullable Bundle savedInstanceState) {
@@ -49,7 +68,7 @@ public class LiveDetailsActivity extends LiveBaseActivity implements UVideoView.
         imm.toggleSoftInput(0, InputMethodManager.HIDE_NOT_ALWAYS);
 
         LiveRoom liveRoom = getIntent().getParcelableExtra("liveroom");
-        if(liveRoom==null){
+        if (liveRoom == null) {
             finish();
             return;
         }
@@ -57,11 +76,11 @@ public class LiveDetailsActivity extends LiveBaseActivity implements UVideoView.
         chatroomId = liveRoom.getChatroomId();
 //        int coverRes = liveRoom.getCover();
 //        coverView.setImageResource(coverRes);
-        EaseUserUtils.setCover(this,liveRoom.getCover()+"",coverView);
+        EaseUserUtils.setCover(this, liveRoom.getCover() + "", coverView);
 
         anchorId = liveRoom.getAnchorId();
         usernameView.setText(anchorId);
-
+        EaseUserUtils.setAppUserAvatar(this,anchorId,liveDetailsIv);
         mVideoView = (UVideoView) findViewById(R.id.videoview);
 
         mVideoView.setPlayType(UVideoView.PlayType.LIVE);
@@ -116,7 +135,7 @@ public class LiveDetailsActivity extends LiveBaseActivity implements UVideoView.
     @Override
     public void onEvent(int what, String message) {
         L.d(TAG, "what:" + what + ", message:" + message);
-        Log.i("main","what:" + what + ", message:" + message);
+        Log.i("main", "what:" + what + ", message:" + message);
         switch (what) {
             case UVideoView.Callback.EVENT_PLAY_START:
                 loadingLayout.setVisibility(View.INVISIBLE);
@@ -158,7 +177,7 @@ public class LiveDetailsActivity extends LiveBaseActivity implements UVideoView.
             case UVideoView.Callback.EVENT_PLAY_STOP:
                 break;
             case UVideoView.Callback.EVENT_PLAY_COMPLETION:
-                Toast.makeText(this, "直播已结束",Toast.LENGTH_LONG).show();
+                Toast.makeText(this, "直播已结束", Toast.LENGTH_LONG).show();
                 finish();
                 break;
             case UVideoView.Callback.EVENT_PLAY_DESTORY:
@@ -177,8 +196,15 @@ public class LiveDetailsActivity extends LiveBaseActivity implements UVideoView.
         }
     }
 
-    @OnClick(R.id.img_bt_close) void close(){
+    @OnClick(R.id.img_bt_close)
+    void close() {
         finish();
     }
 
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        // TODO: add setContentView(...) invocation
+        ButterKnife.bind(this);
+    }
 }
