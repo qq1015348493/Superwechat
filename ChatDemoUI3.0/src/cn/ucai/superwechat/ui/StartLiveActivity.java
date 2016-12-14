@@ -23,6 +23,8 @@ import com.hyphenate.EMValueCallBack;
 import com.hyphenate.chat.EMChatRoom;
 import com.hyphenate.chat.EMClient;
 import com.hyphenate.easeui.controller.EaseUI;
+import com.hyphenate.easeui.domain.EaseUser;
+import com.hyphenate.easeui.utils.EaseUserUtils;
 import com.hyphenate.easeui.widget.EaseAlertDialog;
 import com.ucloud.common.util.DeviceUtils;
 import com.ucloud.live.UEasyStreaming;
@@ -85,9 +87,14 @@ public class StartLiveActivity extends LiveBaseActivity
     setContentView(R.layout.activity_start_live);
     ButterKnife.bind(this);
 
-    liveId = TestDataRepository.getLiveRoomId(EMClient.getInstance().getCurrentUser());
-    chatroomId = TestDataRepository.getChatRoomId(EMClient.getInstance().getCurrentUser());
-    anchorId = EMClient.getInstance().getCurrentUser();
+    LiveRoom room = getIntent().getParcelableExtra("liveroom");
+    if(room==null){
+      finish();
+      return;
+    }
+    liveId = room.getId();
+    chatroomId = room.getChatroomId();
+    anchorId = room.getAnchorId();
     usernameView.setText(anchorId);
     initEnv();
   }
@@ -230,7 +237,8 @@ public class StartLiveActivity extends LiveBaseActivity
     List<LiveRoom> liveRoomList = TestDataRepository.getLiveRoomList();
     for (LiveRoom liveRoom : liveRoomList) {
       if (liveRoom.getId().equals(liveId)) {
-        coverImage.setImageResource(liveRoom.getCover());
+        EaseUserUtils.setCover(this,liveRoom.getCover(),coverImage);
+//        coverImage.setImageResource(liveRoom.getCover());
       }
     }
     View view = liveEndLayout.inflate();

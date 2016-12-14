@@ -47,20 +47,16 @@ import cn.ucai.superwechat.Constant;
 import cn.ucai.superwechat.R;
 import cn.ucai.superwechat.data.LiveRoom;
 import cn.ucai.superwechat.utils.Clazz2;
+import cn.ucai.superwechat.utils.MFGT;
 
 public class PublicChatRoomsActivity extends BaseActivity {
     private ProgressBar pb;
     private RecyclerView listView;
 
     private List<EMChatRoom> chatRoomList;
-    private boolean isLoading;
     private boolean isFirstLoading = true;
-    private boolean hasMoreData = true;
     private String cursor;
     private final int pagesize = 50;
-    private LinearLayout footLoadingLayout;
-    private ProgressBar footLoadingPB;
-    private TextView footLoadingText;
     private EditText etSearch;
     private ImageButton ibClean;
     private List<EMChatRoom> rooms;
@@ -192,7 +188,6 @@ public class PublicChatRoomsActivity extends BaseActivity {
 
             public void run() {
                 try {
-                    isLoading = true;
                     final EMCursorResult<EMChatRoom> result = EMClient.getInstance().chatroomManager().fetchPublicChatRoomsFromServer(pagesize, cursor);
                     //get chat room list
                     final List<EMChatRoom> chatRooms = result.getData();
@@ -204,30 +199,22 @@ public class PublicChatRoomsActivity extends BaseActivity {
                                 cursor = result.getCursor();
                             }
                             if (isFirstLoading) {
-                                pb.setVisibility(View.INVISIBLE);
                                 isFirstLoading = false;
                                 mAdapter = new PhotoAdapter(PublicChatRoomsActivity.this, Clazz2.EMChatRoom2LiveRoom(chatRoomList));
                                 listView.setAdapter(mAdapter);
                                 rooms.addAll(chatRooms);
                             } else {
                                 if (chatRooms.size() < pagesize) {
-                                    hasMoreData = false;
-                                    footLoadingLayout.setVisibility(View.VISIBLE);
-                                    footLoadingPB.setVisibility(View.GONE);
-                                    footLoadingText.setText(getResources().getString(R.string.no_more_messages));
+                                    mAdapter.setMore(false);
                                 }
                                 mAdapter.notifyDataSetChanged();
                             }
-                            isLoading = false;
                         }
                     });
                 } catch (HyphenateException e) {
                     e.printStackTrace();
                     runOnUiThread(new Runnable() {
                         public void run() {
-                            isLoading = false;
-                            pb.setVisibility(View.INVISIBLE);
-                            footLoadingLayout.setVisibility(View.GONE);
                             Toast.makeText(PublicChatRoomsActivity.this, getResources().getString(R.string.failed_to_load_data), Toast.LENGTH_SHORT).show();
                         }
                     });
@@ -352,33 +339,30 @@ public class PublicChatRoomsActivity extends BaseActivity {
                 vh.loadingBar.setVisibility(isMore?View.VISIBLE:View.GONE);
             }else {
                 final PhotoViewHolder vh = (PhotoViewHolder) holder;
-                LiveRoom liveRoom = liveRoomList.get(position);
+                final LiveRoom liveRoom = liveRoomList.get(position);
                 vh.anchor.setText(liveRoom.getName());
                 vh.audienceNum.setText(liveRoom.getAudienceNum()+"人");
                 EaseUserUtils.setCover(context, liveRoom.getCover(), vh.imageView);
-//                holder.itemView.setOnClickListener(new View.OnClickListener() {
-//                    @Override
-//                    public void onClick(View v) {
-//                        final int position = vh.getAdapterPosition();
-//                        if (position == RecyclerView.NO_POSITION) return;
-////                        LiveRoom room = Clazz2.EMChatRoom2LiveRoom(liveRoomList.get(position));
-//                        Intent intent;
-//                        if (EMClient.getInstance().getCurrentUser() == room.getAnchorId()) {
-//                            intent = new Intent(context, StartLiveActivity.class);
-//                        } else {
-//                            intent = new Intent(context, LiveDetailsActivity.class);
-//                        }
-//                        intent.putExtra("liveroom", room);
-//                        context.startActivity(intent);
-//                    }
-//                });
+                final String username = EMClient.getInstance().getCurrentUser();
+                vh.itemView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if(liveRoom.getAnchorId().equals(username)){
+                            MFGT.gotoStartLive(context,liveRoom);
+                        }else {
+                            MFGT.gotoLiveDetails(context,liveRoom);
+
+                        }
+                    }
+                });
+
             }
 
         }
 
         @Override
         public int getItemCount() {
-            return liveRoomList.size()+1;
+            return liveRoomList!=null?liveRoomList.size()+1:1;
         }
 
         @Override
