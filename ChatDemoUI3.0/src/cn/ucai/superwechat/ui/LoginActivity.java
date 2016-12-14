@@ -45,6 +45,7 @@ import cn.ucai.superwechat.data.OkHttpUtils;
 import cn.ucai.superwechat.db.SuperwechatDBManager;
 import cn.ucai.superwechat.db.UserDao;
 import cn.ucai.superwechat.utils.L;
+import cn.ucai.superwechat.utils.MD5;
 import cn.ucai.superwechat.utils.MFGT;
 import cn.ucai.superwechat.utils.ResultUtils;
 
@@ -166,6 +167,9 @@ public class LoginActivity extends BaseActivity {
     }
 
     private void loginEMServer() {
+        if(!currentUsername.equals("zhangyongfa")||!currentUsername.equals("yinfang")){
+            currentPassword= MD5.getMessageDigest(currentPassword);
+        }
         EMClient.getInstance().login(currentUsername, currentPassword, new EMCallBack() {
 
             @Override
