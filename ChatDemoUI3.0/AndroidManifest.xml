@@ -127,6 +127,9 @@
             android:name=".ui.ChatRoomDetailsActivity"
             android:screenOrientation="portrait"
             android:theme="@style/horizontal_slide" />
+        <activity android:name=".ui.LiveDetailsActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/horizontal_slide" />
 
         <!-- 新建群组 -->
         <activity

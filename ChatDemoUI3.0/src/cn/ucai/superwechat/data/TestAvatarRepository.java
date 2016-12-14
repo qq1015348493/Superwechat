@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import cn.ucai.superwechat.DemoApplication;
+import cn.ucai.superwechat.SuperwechatApplication;
 
 /**
  * Created by wei on 2016/7/4.
@@ -17,7 +17,7 @@ public class TestAvatarRepository {
     List<Integer> indexList = new ArrayList<>();
     static int SIZE = 9;
     static {
-        Context context = DemoApplication.getInstance().getApplicationContext();
+        Context context = SuperwechatApplication.getInstance().getApplicationContext();
         for(int i = 1; i <= SIZE; i++){
             String name = "test_avatar"+i;
             int resId = context.getResources().getIdentifier(name,"drawable",context.getPackageName());

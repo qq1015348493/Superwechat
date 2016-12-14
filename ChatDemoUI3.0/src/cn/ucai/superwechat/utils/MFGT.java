@@ -1,21 +1,25 @@
 package cn.ucai.superwechat.utils;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 
 import com.hyphenate.easeui.domain.User;
 
 import cn.ucai.superwechat.I;
 import cn.ucai.superwechat.R;
+import cn.ucai.superwechat.data.LiveRoom;
 import cn.ucai.superwechat.ui.AddContactActivity;
 import cn.ucai.superwechat.ui.AddFriendActivity;
 import cn.ucai.superwechat.ui.ChatActivity;
 import cn.ucai.superwechat.ui.ContactListFragment;
 import cn.ucai.superwechat.ui.FriendProfileActivity;
+import cn.ucai.superwechat.ui.LiveDetailsActivity;
 import cn.ucai.superwechat.ui.LoginActivity;
 import cn.ucai.superwechat.ui.MainActivity;
 import cn.ucai.superwechat.ui.RegisterActivity;
 import cn.ucai.superwechat.ui.SettingsActivity;
+import cn.ucai.superwechat.ui.StartLiveActivity;
 import cn.ucai.superwechat.ui.UserProfileActivity;
 
 
@@ -74,5 +78,18 @@ public class MFGT { public static void finish(Activity activity){ activity.finis
         intent.putExtra("userId",mUserName);
         intent.setClass(context, ChatActivity.class);
         startActivity(context,intent);
+    }
+    public static void gotoStartLive(Context context, LiveRoom liveRoom) {
+        Intent intent = new Intent();
+        intent.putExtra("liveroom",liveRoom);
+        intent.setClass(context,StartLiveActivity.class);
+        context.startActivity(intent);
+    }
+
+    public static void gotoLiveDetails(Context context,LiveRoom liveRoom) {
+        Intent intent = new Intent();
+        intent.putExtra("liveroom",liveRoom);
+        intent.setClass(context,LiveDetailsActivity.class);
+        context.startActivity(intent);
     }
 }
