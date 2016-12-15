@@ -2,6 +2,7 @@ package cn.ucai.superwechat;
 
 import android.content.Context;
 
+import cn.ucai.superwechat.bean.Gift;
 import cn.ucai.superwechat.db.UserDao;
 import cn.ucai.superwechat.domain.RobotUser;
 import cn.ucai.superwechat.utils.PreferenceManager;
@@ -286,6 +287,17 @@ public class SuperwechatModel {
     public void delAppContact(String username) {
         UserDao dao = new UserDao(context);
         dao.deleteAppContact(username);
+    }
+
+    public void saveAppGiftList(ArrayList<Gift> mList) {
+        UserDao dao = new UserDao(context);
+        dao.saveGiftList(mList);
+    }
+
+    public Map<Integer,Gift> getAppGiftList() {
+        UserDao dao = new UserDao(context);
+        Map<Integer, Gift> list = dao.getGiftList();
+        return list;
     }
 
     enum Key{

@@ -26,6 +26,7 @@ import com.hyphenate.chat.EMMessage.Type;
 import com.hyphenate.chat.EMOptions;
 import com.hyphenate.chat.EMTextMessageBody;
 
+import cn.ucai.superwechat.bean.Gift;
 import cn.ucai.superwechat.bean.Result;
 import cn.ucai.superwechat.data.NetDao;
 import cn.ucai.superwechat.data.OkHttpUtils;
@@ -104,6 +105,7 @@ public class SuperwechatHelper {
     private User currentUser = null;
 
     private Map<String,User> appContactList;
+    private Map<Integer,Gift> appGiftList;
 	/**
      * sync groups status listener
      */
@@ -1395,5 +1397,34 @@ public class SuperwechatHelper {
     public void delAppContact(String username){
         getAppContactList().remove(username);
         demoModel.delAppContact(username);
+    }
+    public void setAppGiftList(Map<Integer,Gift> giftList) {
+        if (giftList == null) {
+            if(appGiftList!=null){
+                appGiftList.clear();
+            }
+            return;
+        }
+        appGiftList = giftList;
+    }
+    public Map<Integer, Gift> getAppGiftList() {
+        Log.e("main","getAppGiftList  "+appGiftList);
+        if (appGiftList == null||appGiftList.size()==0) {
+            appGiftList = demoModel.getAppGiftList();
+        }
+        // return a empty non-null object to avoid app crash
+        if(appGiftList == null){
+            return new Hashtable<Integer, Gift>();
+        }
+        return appGiftList;
+    }
+
+    public void updateAppGiftList(List<Gift> giftList) {
+        for (Gift gift : giftList) {
+            appGiftList.put(gift.getId(), gift);
+        }
+        ArrayList<Gift> mList = new ArrayList<Gift>();
+        mList.addAll(appGiftList.values());
+        demoModel.saveAppGiftList(mList);
     }
 }

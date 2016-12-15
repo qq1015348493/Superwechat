@@ -23,18 +23,25 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.hyphenate.easeui.domain.User;
 import com.hyphenate.easeui.utils.EaseUserUtils;
 
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import cn.ucai.superwechat.I;
 import cn.ucai.superwechat.R;
+import cn.ucai.superwechat.SuperwechatApplication;
+import cn.ucai.superwechat.SuperwechatHelper;
 import cn.ucai.superwechat.bean.Gift;
 import cn.ucai.superwechat.bean.Result;
 import cn.ucai.superwechat.data.NetDao;
 import cn.ucai.superwechat.data.OkHttpUtils;
+import cn.ucai.superwechat.db.UserDao;
 import cn.ucai.superwechat.utils.ResultUtils;
 
 /**
@@ -48,7 +55,7 @@ public class GiftDialog extends DialogFragment {
     Context context;
     GiftAdapter adapter;
 
-    ArrayList<Gift> List;
+    ArrayList<Gift> myList;
     private String username;
     private String anchor;
     public static GiftDialog newInstance() {
@@ -62,13 +69,13 @@ public class GiftDialog extends DialogFragment {
         View view = inflater.inflate(R.layout.fragment_gift_dialog, container, false);
         ButterKnife.bind(this, view);
         context = getActivity();
-        List = new ArrayList<>();
+        myList = new ArrayList<>();
         if(getArguments()!=null){
             username = getArguments().getString("username");
             anchor = getArguments().getString("anchor");
         }
-        initData();
         initView();
+        initData();
         return view;
     }
 
@@ -77,7 +84,7 @@ public class GiftDialog extends DialogFragment {
         // Dialog dialog = new Dialog(getActivity());
         Dialog dialog = new Dialog(getActivity(), R.style.room_user_details_dialog);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE); // must be called before set content
-        dialog.setContentView(R.layout.fragment_room_user_details);
+        dialog.setContentView(R.layout.fragment_gift_dialog);
         dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         dialog.setCanceledOnTouchOutside(true);
 
@@ -91,22 +98,42 @@ public class GiftDialog extends DialogFragment {
         return dialog;
     }
     private void initView() {
-        adapter = new GiftAdapter(context,List);
-        giftRecycler.setAdapter(adapter);
         GridLayoutManager gml = new GridLayoutManager(context,5);
         giftRecycler.setLayoutManager(gml);
     }
 
     private void initData() {
+        UserDao dao = new UserDao(context);
+        Map<Integer,Gift> gifts = SuperwechatHelper.getInstance().getAppGiftList();
+        if(gifts!=null && !gifts.isEmpty()){
+
+            Log.i("main","读取成功");
+            for(Gift gift : gifts.values()){
+                myList.add(gift);
+            }
+            adapter = new GiftAdapter(context,myList);
+            giftRecycler.setAdapter(adapter);
+        }else {
+            getAllGifts();
+        }
+
+    }
+
+    private void getAllGifts() {
         NetDao.getAllGifts(context, new OkHttpUtils.OnCompleteListener<String>() {
             @Override
             public void onSuccess(String s) {
                 if(s!=null){
                     Result result = ResultUtils.getListResultFromJson(s, Gift.class);
-                    if(result!=null){
-                        List.clear();
-                        ArrayList<Gift> mList = (ArrayList<Gift>) result.getRetData();
-                        List.addAll(mList);
+                    if(result!=null&&result.isRetMsg()){
+                        myList.clear();
+                        List<Gift> mList = (List<Gift>) result.getRetData();
+                        if(mList!=null&&mList.size()>0){
+                            SuperwechatHelper.getInstance().updateAppGiftList(mList);
+                            myList.addAll(mList);
+                            adapter = new GiftAdapter(context,myList);
+                            giftRecycler.setAdapter(adapter);
+                        }
                     }
                 }
             }
@@ -119,7 +146,7 @@ public class GiftDialog extends DialogFragment {
     }
 
 
-     class GiftAdapter extends RecyclerView.Adapter{
+    class GiftAdapter extends RecyclerView.Adapter{
         Context context;
         ArrayList<Gift> mList ;
 
@@ -136,11 +163,12 @@ public class GiftDialog extends DialogFragment {
         @Override
         public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
             final Gift gift = mList.get(position);
-            ((ViewHolder) holder).giftName.setText(gift.getGname());
-            ((ViewHolder) holder).giftPrice.setText(gift.getGprice());
+            ViewHolder holder1 = (ViewHolder) holder;
+            holder1.giftName.setText(gift.getGname());
+            holder1.giftPrice.setText(gift.getGprice() + "");
 //            Glide.with(context).load(gift.getGurl()).into(((ViewHolder) holder).giftImage);
-            EaseUserUtils.setAppUserPathAvatar(context,gift.getGurl(),((ViewHolder) holder).giftImage);
-            holder.itemView.setOnClickListener(new View.OnClickListener() {
+            EaseUserUtils.setAppUserPathAvatar(context,gift.getGurl(),holder1.giftImage);
+            holder1.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     NetDao.GivingGifts(context, username, anchor, gift.getId(), new OkHttpUtils.OnCompleteListener<String>() {
@@ -185,5 +213,12 @@ public class GiftDialog extends DialogFragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
+    }
+
+    private int setGiftImage(int id){
+        Context context = SuperwechatApplication.getInstance().getApplicationContext();
+        String name ="hani_gift_"+id;
+        int resId = context.getResources().getIdentifier(name,"drawable",context.getPackageName());
+        return resId;
     }
 }

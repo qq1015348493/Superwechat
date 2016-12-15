@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.text.TextUtils;
+import android.util.Log;
 
 import cn.ucai.superwechat.Constant;
 import cn.ucai.superwechat.SuperwechatApplication;
@@ -506,19 +507,20 @@ public class SuperwechatDBManager {
 
     synchronized public void saveGiftList(List<Gift> mList) {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
+        for (Gift gift : mList) {
+            Log.i("main","SuperwechatDBManager   "+gift.toString());
+            ContentValues values = new ContentValues();
+            values.put(UserDao.GIFT_ID, gift.getId());
+            if(gift.getGname() != null)
+                values.put(UserDao.GIFT_NAME,gift.getGname());
+            if(gift.getGurl()!= null)
+                values.put(UserDao.GIFT_URL,gift.getGurl());
+            if(gift.getGprice() != null)
+                values.put(UserDao.GIFT_PRICE,gift.getGprice());
+            db.replace(UserDao.GIFT_TAVLE_NAME, null, values);
+        }
         if (db.isOpen()) {
             db.delete(UserDao.GIFT_TAVLE_NAME, null, null);
-            for (Gift gift : mList) {
-                ContentValues values = new ContentValues();
-                values.put(UserDao.GIFT_ID, gift.getId());
-                if(gift.getGname() != null)
-                    values.put(UserDao.GIFT_NAME,gift.getGname());
-                if(gift.getGurl()!= null)
-                    values.put(UserDao.GIFT_URL,gift.getGurl());
-                if(gift.getGprice() != null)
-                    values.put(UserDao.GIFT_PRICE,gift.getGprice());
-                db.replace(UserDao.GIFT_TAVLE_NAME, null, values);
-            }
         }
     }
 
@@ -535,6 +537,7 @@ public class SuperwechatDBManager {
                 gift.setGurl(c.getString(c.getColumnIndex(UserDao.GIFT_URL)));
                 gift.setGprice(c.getInt(c.getColumnIndex(UserDao.GIFT_PRICE)));
                 gifts.put(id,gift);
+                Log.i("main","张 "+gift.toString());
             }
             c.close();
         }
