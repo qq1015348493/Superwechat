@@ -112,6 +112,7 @@ public abstract class LiveBaseActivity extends BaseActivity {
 
   private void showGift1Derect(final EMMessage message) {
     final String name = message.getFrom();
+    final int id = message.getIntAttribute(I.Gift.Gid,0);
     final String nick = message.getStringAttribute(I.User.NICK,name);
     isGiftShowing = true;
     runOnUiThread(new Runnable() {
@@ -119,6 +120,7 @@ public abstract class LiveBaseActivity extends BaseActivity {
         leftGiftView.setVisibility(View.VISIBLE);
         leftGiftView.setName(nick);
         leftGiftView.setAvatar(name);
+        leftGiftView.setGift(id);
         leftGiftView.setTranslationY(0);
         ViewAnimator.animate(leftGiftView)
             .alpha(0, 1)
@@ -155,6 +157,7 @@ public abstract class LiveBaseActivity extends BaseActivity {
 
   private void showGift2Derect(final EMMessage message) {
     final String name = message.getFrom();
+    final int id = message.getIntAttribute(I.Gift.Gid,0);
     final String nick = message.getStringAttribute(I.User.NICK,name);
     isGift2Showing = true;
     runOnUiThread(new Runnable() {
@@ -162,6 +165,7 @@ public abstract class LiveBaseActivity extends BaseActivity {
         leftGiftView2.setVisibility(View.VISIBLE);
         leftGiftView2.setName(nick);
         leftGiftView2.setAvatar(name);
+        leftGiftView2.setGift(id);
         leftGiftView2.setTranslationY(0);
         ViewAnimator.animate(leftGiftView2)
             .alpha(0, 1)
@@ -369,7 +373,19 @@ public abstract class LiveBaseActivity extends BaseActivity {
     }
   }
 
-
+  private void showGiftListDialog() {
+    final GiftDialog dialog =
+            GiftDialog.newInstance();
+    dialog.setGiftDialogListener(new View.OnClickListener() {
+      @Override
+      public void onClick(View v) {
+        dialog.dismiss();
+        int gid = (int) v.getTag();
+        sendMessage(gid);
+      }
+    });
+    dialog.show(getSupportFragmentManager(),"GiftDialog");
+  }
   private void showUserDetailsDialog(String username) {
     final RoomUserDetailsDialog dialog =
         RoomUserDetailsDialog.newInstance(username);
@@ -449,17 +465,20 @@ public abstract class LiveBaseActivity extends BaseActivity {
   }
 
   @OnClick(R.id.present_image) void onPresentImageClick() {
-    final GiftDialog dialog = GiftDialog.newInstance();
-    dialog.show(getSupportFragmentManager(),"GiftDialog");
+    showGiftListDialog();
 
-//    EMMessage message = EMMessage.createSendMessage(EMMessage.Type.CMD);
-//    message.setReceipt(chatroomId);
-//    EMCmdMessageBody cmdMessageBody = new EMCmdMessageBody(Constant.CMD_GIFT);
-//    message.addBody(cmdMessageBody);
-//    message.setAttribute(I.User.NICK,EaseUserUtils.getAppUserInfo(EMClient.getInstance().getCurrentUser()).getMUserNick());
-//    message.setChatType(EMMessage.ChatType.ChatRoom);
-//    EMClient.getInstance().chatManager().sendMessage(message);
-//    showLeftGiftVeiw(message);
+  }
+
+  private void sendMessage(int gid) {
+    EMMessage message = EMMessage.createSendMessage(EMMessage.Type.CMD);
+    message.setReceipt(chatroomId);
+    EMCmdMessageBody cmdMessageBody = new EMCmdMessageBody(Constant.CMD_GIFT);
+    message.addBody(cmdMessageBody);
+    message.setAttribute(I.User.NICK,EaseUserUtils.getAppUserInfo(EMClient.getInstance().getCurrentUser()).getMUserNick());
+    message.setAttribute(I.Gift.Gid,gid);
+    message.setChatType(EMMessage.ChatType.ChatRoom);
+    EMClient.getInstance().chatManager().sendMessage(message);
+    showLeftGiftVeiw(message);
   }
 
   @OnClick(R.id.chat_image) void onChatImageClick() {

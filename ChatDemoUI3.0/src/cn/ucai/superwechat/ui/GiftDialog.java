@@ -7,7 +7,6 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
-import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -17,23 +16,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-
-import com.bumptech.glide.Glide;
-import com.hyphenate.easeui.domain.User;
-import com.hyphenate.easeui.utils.EaseUserUtils;
-
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import cn.ucai.superwechat.I;
 import cn.ucai.superwechat.R;
 import cn.ucai.superwechat.SuperwechatApplication;
 import cn.ucai.superwechat.SuperwechatHelper;
@@ -107,7 +98,6 @@ public class GiftDialog extends DialogFragment {
         Map<Integer,Gift> gifts = SuperwechatHelper.getInstance().getAppGiftList();
         if(gifts!=null && !gifts.isEmpty()){
 
-            Log.i("main","读取成功");
             for(Gift gift : gifts.values()){
                 myList.add(gift);
             }
@@ -145,6 +135,13 @@ public class GiftDialog extends DialogFragment {
         });
     }
 
+    View.OnClickListener mListener;
+    public void setGiftDialogListener(View.OnClickListener dialogListener) {
+        this.mListener = dialogListener;
+    }
+
+
+
 
     class GiftAdapter extends RecyclerView.Adapter{
         Context context;
@@ -167,25 +164,10 @@ public class GiftDialog extends DialogFragment {
             holder1.giftName.setText(gift.getGname());
             holder1.giftPrice.setText(gift.getGprice() + "");
 //            Glide.with(context).load(gift.getGurl()).into(((ViewHolder) holder).giftImage);
-            EaseUserUtils.setAppUserPathAvatar(context,gift.getGurl(),holder1.giftImage);
-            holder1.itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    NetDao.GivingGifts(context, username, anchor, gift.getId(), new OkHttpUtils.OnCompleteListener<String>() {
-                        @Override
-                        public void onSuccess(String result) {
-                            if(result!=null){
-                                Log.i("main","送礼物成功");
-                            }
-                        }
-
-                        @Override
-                        public void onError(String error) {
-
-                        }
-                    });
-                }
-            });
+//            EaseUserUtils.setAppUserPathAvatar(context,gift.getGurl(),holder1.giftImage);
+            holder1.giftImage.setImageResource(setGiftImage(gift.getId()));
+            holder1.giftLayout.setTag(gift.getId());
+            holder1.itemView.setOnClickListener(mListener);
         }
 
 

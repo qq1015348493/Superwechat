@@ -508,7 +508,6 @@ public class SuperwechatDBManager {
     synchronized public void saveGiftList(List<Gift> mList) {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         for (Gift gift : mList) {
-            Log.i("main","SuperwechatDBManager   "+gift.toString());
             ContentValues values = new ContentValues();
             values.put(UserDao.GIFT_ID, gift.getId());
             if(gift.getGname() != null)
@@ -537,7 +536,6 @@ public class SuperwechatDBManager {
                 gift.setGurl(c.getString(c.getColumnIndex(UserDao.GIFT_URL)));
                 gift.setGprice(c.getInt(c.getColumnIndex(UserDao.GIFT_PRICE)));
                 gifts.put(id,gift);
-                Log.i("main","张 "+gift.toString());
             }
             c.close();
         }
