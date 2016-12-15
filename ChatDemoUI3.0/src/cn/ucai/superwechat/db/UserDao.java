@@ -20,6 +20,7 @@ import java.util.Map;
 import android.content.Context;
 
 import cn.ucai.superwechat.SuperwechatHelper;
+import cn.ucai.superwechat.bean.Gift;
 import cn.ucai.superwechat.domain.RobotUser;
 import com.hyphenate.easeui.domain.EaseUser;
 import com.hyphenate.easeui.domain.User;
@@ -29,7 +30,15 @@ public class UserDao {
 	public static final String COLUMN_NAME_ID = "username";
 	public static final String COLUMN_NAME_NICK = "nick";
 	public static final String COLUMN_NAME_AVATAR = "avatar";
-	
+	/**
+	 * 创建礼物数据库
+	 */
+	public static final String GIFT_TAVLE_NAME = "gift";
+	public static final String GIFT_ID = "id";
+	public static final String GIFT_NAME = "gname";
+	public static final String GIFT_URL  = "gurl";
+	public static final String GIFT_PRICE= "gprice";
+
 	public static final String PREF_TABLE_NAME = "pref";
 	public static final String COLUMN_NAME_DISABLED_GROUPS = "disabled_groups";
 	public static final String COLUMN_NAME_DISABLED_IDS = "disabled_ids";
@@ -136,5 +145,13 @@ public class UserDao {
 	}
 	public void deleteAppContact(String username){
 		SuperwechatDBManager.getInstance().deleteAppContact(username);
+	}
+
+	public Map<Integer,Gift> getGiftList(){
+		return SuperwechatDBManager.getInstance().getGiftList();
+	}
+
+	public void saveGiftList(List<Gift> mList){
+		SuperwechatDBManager.getInstance().saveGiftList(mList);
 	}
 }

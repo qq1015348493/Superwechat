@@ -1,12 +1,14 @@
 package cn.ucai.superwechat.db;
 
 import android.content.ContentValues;
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.text.TextUtils;
 
 import cn.ucai.superwechat.Constant;
 import cn.ucai.superwechat.SuperwechatApplication;
+import cn.ucai.superwechat.bean.Gift;
 import cn.ucai.superwechat.domain.InviteMessage;
 import cn.ucai.superwechat.domain.RobotUser;
 import com.hyphenate.easeui.domain.EaseUser;
@@ -501,4 +503,43 @@ public class SuperwechatDBManager {
             db.delete(UserDao.USER_TABLE_NAME, UserDao.USER_COLUMN_NAME + " = ?", new String[]{username});
         }
     }
+
+    synchronized public void saveGiftList(List<Gift> mList) {
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        if (db.isOpen()) {
+            db.delete(UserDao.GIFT_TAVLE_NAME, null, null);
+            for (Gift gift : mList) {
+                ContentValues values = new ContentValues();
+                values.put(UserDao.GIFT_ID, gift.getId());
+                if(gift.getGname() != null)
+                    values.put(UserDao.GIFT_NAME,gift.getGname());
+                if(gift.getGurl()!= null)
+                    values.put(UserDao.GIFT_URL,gift.getGurl());
+                if(gift.getGprice() != null)
+                    values.put(UserDao.GIFT_PRICE,gift.getGprice());
+                db.replace(UserDao.GIFT_TAVLE_NAME, null, values);
+            }
+        }
+    }
+
+    synchronized public Map<Integer,Gift> getGiftList(){
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        Map<Integer,Gift> gifts = new Hashtable<Integer, Gift>();
+        if(db.isOpen()){
+            Cursor c =db.rawQuery("select * from "+UserDao.GIFT_TAVLE_NAME,null);
+            while(c.moveToNext()){
+                int id =  c.getInt(c.getColumnIndex(UserDao.GIFT_ID));
+                Gift gift = new Gift();
+                gift.setId(id);
+                gift.setGname(c.getString(c.getColumnIndex(UserDao.GIFT_NAME)));
+                gift.setGurl(c.getString(c.getColumnIndex(UserDao.GIFT_URL)));
+                gift.setGprice(c.getInt(c.getColumnIndex(UserDao.GIFT_PRICE)));
+                gifts.put(id,gift);
+            }
+            c.close();
+        }
+        return gifts;
+    }
+
+
 }
