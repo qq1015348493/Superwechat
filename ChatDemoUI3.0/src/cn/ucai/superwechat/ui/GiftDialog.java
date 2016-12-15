@@ -23,11 +23,13 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.hyphenate.easeui.utils.EaseUserUtils;
 
 import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import cn.ucai.superwechat.I;
 import cn.ucai.superwechat.R;
 import cn.ucai.superwechat.bean.Gift;
 import cn.ucai.superwechat.bean.Result;
@@ -49,12 +51,8 @@ public class GiftDialog extends DialogFragment {
     ArrayList<Gift> List;
     private String username;
     private String anchor;
-    public static GiftDialog newInstance(String username,String anchor) {
+    public static GiftDialog newInstance() {
         GiftDialog dialog = new GiftDialog();
-        Bundle args = new Bundle();
-        args.putString("username", username);
-        args.putString("anchor",anchor);
-        dialog.setArguments(args);
         return dialog;
     }
 
@@ -63,7 +61,7 @@ public class GiftDialog extends DialogFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_gift_dialog, container, false);
         ButterKnife.bind(this, view);
-        context = getContext();
+        context = getActivity();
         List = new ArrayList<>();
         if(getArguments()!=null){
             username = getArguments().getString("username");
@@ -104,7 +102,7 @@ public class GiftDialog extends DialogFragment {
             @Override
             public void onSuccess(String s) {
                 if(s!=null){
-                    Result result = ResultUtils.getResultFromJson(s, Gift.class);
+                    Result result = ResultUtils.getListResultFromJson(s, Gift.class);
                     if(result!=null){
                         List.clear();
                         ArrayList<Gift> mList = (ArrayList<Gift>) result.getRetData();
@@ -140,7 +138,8 @@ public class GiftDialog extends DialogFragment {
             final Gift gift = mList.get(position);
             ((ViewHolder) holder).giftName.setText(gift.getGname());
             ((ViewHolder) holder).giftPrice.setText(gift.getGprice());
-            Glide.with(context).load(gift.getGurl()).into(((ViewHolder) holder).giftImage);
+//            Glide.with(context).load(gift.getGurl()).into(((ViewHolder) holder).giftImage);
+            EaseUserUtils.setAppUserPathAvatar(context,gift.getGurl(),((ViewHolder) holder).giftImage);
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

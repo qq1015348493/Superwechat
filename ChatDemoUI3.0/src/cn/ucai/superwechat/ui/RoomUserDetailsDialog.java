@@ -63,7 +63,7 @@ public class RoomUserDetailsDialog extends DialogFragment {
             username = getArguments().getString("username");
         }
         if (username != null) {
-            usernameView.setText(username);
+            usernameView.setText(EaseUserUtils.getAppUserInfo(username).getMUserNick());
             EaseUserUtils.setAppUserAvatar(getContext(),username,roomUserDetailsIv);
         }
         mentionBtn.setText("@TA");

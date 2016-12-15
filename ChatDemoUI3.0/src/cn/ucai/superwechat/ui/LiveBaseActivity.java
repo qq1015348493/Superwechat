@@ -449,8 +449,7 @@ public abstract class LiveBaseActivity extends BaseActivity {
   }
 
   @OnClick(R.id.present_image) void onPresentImageClick() {
-    final GiftDialog dialog = GiftDialog.newInstance(EMClient.getInstance().getCurrentUser(),anchorId);
-
+    final GiftDialog dialog = GiftDialog.newInstance();
     dialog.show(getSupportFragmentManager(),"GiftDialog");
 
 //    EMMessage message = EMMessage.createSendMessage(EMMessage.Type.CMD);
