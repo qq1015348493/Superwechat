@@ -6,9 +6,11 @@ import com.hyphenate.chat.EMClient;
 import com.hyphenate.chat.EMGroup;
 
 import java.io.File;
+import java.util.ArrayList;
 
 import cn.ucai.superwechat.I;
 import cn.ucai.superwechat.SuperwechatHelper;
+import cn.ucai.superwechat.bean.Gift;
 import cn.ucai.superwechat.bean.Result;
 import cn.ucai.superwechat.utils.L;
 import cn.ucai.superwechat.utils.MD5;
@@ -148,5 +150,21 @@ public class NetDao {
                     .targetClass(String.class)
                     .execute(listener);
         }
+    }
+    public static void getAllGifts(Context context, OkHttpUtils.OnCompleteListener<String> listener){
+        OkHttpUtils<String> utils = new OkHttpUtils<>(context);
+        utils.setRequestUrl(I.REQUEST_ALL_GIFTS)
+                .targetClass(String.class)
+                .execute(listener);
+    }
+    public static void GivingGifts(Context context,String username,String anchor,int giftId,OkHttpUtils.OnCompleteListener<String> listener){
+        OkHttpUtils<String> utils = new OkHttpUtils<>(context);
+        utils.setRequestUrl(I.REQUEST_GIVING_GIFT)
+                .addParam(I.User.USER_NAME,username)
+                .addParam("anchor",anchor)
+                .addParam("giftId",Integer.toString(giftId))
+                .addParam("giftNum",1+"")
+                .targetClass(String.class)
+                .execute(listener);
     }
 }

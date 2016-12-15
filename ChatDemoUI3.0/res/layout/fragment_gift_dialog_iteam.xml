@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/gift_layout"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <ImageView
+        android:id="@+id/gift_image"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:src="@drawable/default_hd_avatar"/>
+
+    <TextView
+        android:id="@+id/gift_name"
+        android:gravity="center"
+        android:layout_width="60dp"
+        android:layout_height="wrap_content"
+        android:text="大宝剑"/>
+    <TextView
+        android:id="@+id/gift_price"
+        android:gravity="center"
+        android:layout_width="60dp"
+        android:layout_height="wrap_content"
+        android:text="20刀"/>
+</LinearLayout>
