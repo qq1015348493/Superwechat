@@ -130,6 +130,7 @@ public class SuperwechatHelper {
     public boolean isVideoCalling;
 
 	private String username;
+    private String change;
 
     private Context appContext;
 
@@ -956,6 +957,18 @@ public class SuperwechatHelper {
     		username = demoModel.getCurrentUsernName();
     	}
     	return username;
+    }
+
+    public void setCurrentuserChange(String change){
+        this.change = change;
+        demoModel.setCurrentuserChange(change);
+    }
+
+    public String getCurrentuserChange(){
+        if(change == null){
+            change = demoModel.getCurrentuserChange();
+        }
+        return change;
     }
 
 	public void setRobotList(Map<String, RobotUser> robotList) {

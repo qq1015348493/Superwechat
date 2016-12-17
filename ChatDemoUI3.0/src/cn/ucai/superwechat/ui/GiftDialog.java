@@ -119,6 +119,7 @@ public class GiftDialog extends DialogFragment {
                         myList.clear();
                         List<Gift> mList = (List<Gift>) result.getRetData();
                         if(mList!=null&&mList.size()>0){
+                            Log.i("main",mList.toString());
                             SuperwechatHelper.getInstance().updateAppGiftList(mList);
                             myList.addAll(mList);
                             adapter = new GiftAdapter(context,myList);

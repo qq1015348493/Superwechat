@@ -11,7 +11,15 @@ public interface I {
 		String NICK 								= 		"m_user_nick";					//用户昵称
 	}
 	public static interface Gift {
-		String Gid 								= 		"gid";					//用户昵称
+		String Gid 								= 		"giftId";
+		String USERNAME                             =         "uname";
+		String ANCHOR                               =          "anchor";
+		String GIFT_NUM                               =          "giftNum";
+	}
+
+	public static interface Live {
+		String USERNAME                             =         "uname";//用户昵称
+		String RMB                                  =           "rmb";
 	}
 	public static interface Contact {
 		String TABLE_NAME 							= 		"t_superwechat_contact";

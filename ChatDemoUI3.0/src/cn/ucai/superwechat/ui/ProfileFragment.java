@@ -76,7 +76,8 @@ public class ProfileFragment extends Fragment {
                 break;
             //red packet code : 进入零钱页面
             case R.id.tv_profile_money:
-                RedPacketUtil.startChangeActivity(getActivity());
+                MFGT.startActivity(mcontext,ChangeActivity.class);
+//                RedPacketUtil.startChangeActivity(getActivity());
                 break;
             case R.id.tv_profile_setting:
                 MFGT.gotoSettings(mcontext);

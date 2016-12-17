@@ -507,20 +507,26 @@ public class SuperwechatDBManager {
 
     synchronized public void saveGiftList(List<Gift> mList) {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
-        for (Gift gift : mList) {
-            ContentValues values = new ContentValues();
-            values.put(UserDao.GIFT_ID, gift.getId());
-            if(gift.getGname() != null)
-                values.put(UserDao.GIFT_NAME,gift.getGname());
-            if(gift.getGurl()!= null)
-                values.put(UserDao.GIFT_URL,gift.getGurl());
-            if(gift.getGprice() != null)
-                values.put(UserDao.GIFT_PRICE,gift.getGprice());
-            db.replace(UserDao.GIFT_TAVLE_NAME, null, values);
-        }
         if (db.isOpen()) {
             db.delete(UserDao.GIFT_TAVLE_NAME, null, null);
         }
+        for (Gift gift : mList) {
+            ContentValues values = new ContentValues();
+            if(gift.getGprice() != null){
+                values.put(UserDao.GIFT_PRICE,gift.getGprice());
+            }
+            if(gift.getGname() != null){
+                values.put(UserDao.GIFT_NAME,gift.getGname());
+            }
+            if(gift.getGurl()!= null){
+                values.put(UserDao.GIFT_URL,gift.getGurl());
+            }
+            if(gift.getId()!=null){
+                values.put(UserDao.GIFT_ID,gift.getId());
+            }
+            db.replace(UserDao.GIFT_TAVLE_NAME, null, values);
+        }
+
     }
 
     synchronized public Map<Integer,Gift> getGiftList(){

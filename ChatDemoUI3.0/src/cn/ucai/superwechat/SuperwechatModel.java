@@ -52,7 +52,15 @@ public class SuperwechatModel {
     public String getCurrentUsernName(){
         return PreferenceManager.getInstance().getCurrentUsername();
     }
-    
+
+    public void setCurrentuserChange(String change){
+        PreferenceManager.getInstance().setCurrentuserChange(change);
+    }
+
+    public String getCurrentuserChange(){
+        return PreferenceManager.getInstance().getCurrentuserChange();
+    }
+
     public Map<String, RobotUser> getRobotList(){
         UserDao dao = new UserDao(context);
         return dao.getRobotUser();

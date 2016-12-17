@@ -43,10 +43,12 @@ public class PreferenceManager {
 	private static String SHARED_KEY_CURRENTUSER_USERNAME = "SHARED_KEY_CURRENTUSER_USERNAME";
 	private static String SHARED_KEY_CURRENTUSER_NICK = "SHARED_KEY_CURRENTUSER_NICK";
 	private static String SHARED_KEY_CURRENTUSER_AVATAR = "SHARED_KEY_CURRENTUSER_AVATAR";
+	private static String SHARED_KEY_CURRENTUSER_CHANGE = "SHARED_KEY_CURRENTUSER_CHANGE";
 
 	private static String SHARED_KEY_REST_SERVER = "SHARED_KEY_REST_SERVER";
 	private static String SHARED_KEY_IM_SERVER = "SHARED_KEY_IM_SERVER";
 	private static String SHARED_KEY_ENABLE_CUSTOM_SERVER = "SHARED_KEY_ENABLE_CUSTOM_SERVER";
+
 
 	@SuppressLint("CommitPrefEdits")
 	private PreferenceManager(Context cxt) {
@@ -63,7 +65,7 @@ public class PreferenceManager {
 	/**
 	 * get instance of PreferenceManager
 	 *
-	 * @param cxt
+	 * @param
 	 * @return
 	 */
 	public synchronized static PreferenceManager getInstance() {
@@ -199,6 +201,15 @@ public class PreferenceManager {
 
 	public String getCurrentUsername(){
 		return mSharedPreferences.getString(SHARED_KEY_CURRENTUSER_USERNAME, null);
+	}
+
+	public String getCurrentuserChange(){
+		return mSharedPreferences.getString(SHARED_KEY_CURRENTUSER_CHANGE,null);
+	}
+
+	public void setCurrentuserChange(String change){
+		editor.putString(SHARED_KEY_CURRENTUSER_CHANGE,change);
+		editor.apply();
 	}
 
 	public void setRestServer(String restServer){

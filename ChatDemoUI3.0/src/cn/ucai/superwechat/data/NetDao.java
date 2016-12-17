@@ -160,10 +160,27 @@ public class NetDao {
     public static void GivingGifts(Context context,String username,String anchor,int giftId,OkHttpUtils.OnCompleteListener<String> listener){
         OkHttpUtils<String> utils = new OkHttpUtils<>(context);
         utils.setRequestUrl(I.REQUEST_GIVING_GIFT)
-                .addParam(I.User.USER_NAME,username)
-                .addParam("anchor",anchor)
-                .addParam("giftId",Integer.toString(giftId))
-                .addParam("giftNum",1+"")
+                .addParam(I.Gift.USERNAME,username)
+                .addParam(I.Gift.ANCHOR,anchor)
+                .addParam(I.Gift.Gid,Integer.toString(giftId))
+                .addParam(I.Gift.GIFT_NUM,"1")
+                .targetClass(String.class)
+                .execute(listener);
+    }
+
+    public static void ReChange(Context context,String username,int rmb,OkHttpUtils.OnCompleteListener<String> listener){
+        OkHttpUtils<String> utils = new OkHttpUtils<>(context);
+        utils.setRequestUrl(I.REQUEST_RECHARGE)
+                .addParam(I.Live.USERNAME,username)
+                .addParam(I.Live.RMB,rmb+"")
+                .targetClass(String.class)
+                .execute(listener);
+    }
+
+    public static void GetBalance(Context context,String username,OkHttpUtils.OnCompleteListener<String> listener){
+        OkHttpUtils<String> utils = new OkHttpUtils<>(context);
+        utils.setRequestUrl(I.REQUEST_BALANCE)
+                .addParam(I.Live.USERNAME,username)
                 .targetClass(String.class)
                 .execute(listener);
     }

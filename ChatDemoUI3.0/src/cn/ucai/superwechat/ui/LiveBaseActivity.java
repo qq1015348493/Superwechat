@@ -1,17 +1,22 @@
 package cn.ucai.superwechat.ui;
 
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.github.florent37.viewanimator.AnimationListener;
@@ -43,7 +48,15 @@ import cn.ucai.superwechat.Constant;
 import cn.ucai.superwechat.DemoConstants;
 import cn.ucai.superwechat.I;
 import cn.ucai.superwechat.R;
+import cn.ucai.superwechat.SuperwechatHelper;
+import cn.ucai.superwechat.bean.Gift;
+import cn.ucai.superwechat.bean.Result;
+import cn.ucai.superwechat.bean.Wallet;
+import cn.ucai.superwechat.data.NetDao;
+import cn.ucai.superwechat.data.OkHttpUtils;
 import cn.ucai.superwechat.data.TestAvatarRepository;
+import cn.ucai.superwechat.utils.MFGT;
+import cn.ucai.superwechat.utils.ResultUtils;
 import cn.ucai.superwechat.utils.Utils;
 import cn.ucai.superwechat.widget.BarrageLayout;
 import cn.ucai.superwechat.widget.LiveLeftGiftView;
@@ -55,7 +68,7 @@ import cn.ucai.superwechat.widget.RoomMessagesView;
  */
 public abstract class LiveBaseActivity extends BaseActivity {
   protected static final String TAG = "LiveActivity";
-
+  Context context;
   @BindView(R.id.left_gift_view1)
   LiveLeftGiftView leftGiftView;
   @BindView(R.id.left_gift_view2) LiveLeftGiftView leftGiftView2;
@@ -94,6 +107,7 @@ public abstract class LiveBaseActivity extends BaseActivity {
   @Override protected void onCreate(@Nullable Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     onActivityCreate(savedInstanceState);
+    context = getBaseContext();
   }
 
   protected Handler handler = new Handler();
@@ -381,7 +395,7 @@ public abstract class LiveBaseActivity extends BaseActivity {
       public void onClick(View v) {
         dialog.dismiss();
         int gid = (int) v.getTag();
-        sendMessage(gid);
+        PayGift(gid);
       }
     });
     dialog.show(getSupportFragmentManager(),"GiftDialog");
@@ -468,8 +482,7 @@ public abstract class LiveBaseActivity extends BaseActivity {
     showGiftListDialog();
 
   }
-
-  private void sendMessage(int gid) {
+  private void sendGift(int gid) {
     EMMessage message = EMMessage.createSendMessage(EMMessage.Type.CMD);
     message.setReceipt(chatroomId);
     EMCmdMessageBody cmdMessageBody = new EMCmdMessageBody(Constant.CMD_GIFT);
@@ -479,6 +492,74 @@ public abstract class LiveBaseActivity extends BaseActivity {
     message.setChatType(EMMessage.ChatType.ChatRoom);
     EMClient.getInstance().chatManager().sendMessage(message);
     showLeftGiftVeiw(message);
+  }
+  private void PayGift(final int gid) {
+    Gift gift = SuperwechatHelper.getInstance().getAppGiftList().get(gid);
+    String a = SuperwechatHelper.getInstance().getCurrentuserChange();
+    int change = 0;
+    if(a!=null){
+      change = Integer.getInteger(a);
+    }else {
+      NetDao.GetBalance(this, EMClient.getInstance().getCurrentUser(), new OkHttpUtils.OnCompleteListener<String>() {
+        @Override
+        public void onSuccess(String s) {
+          if (s != null) {
+            Result result = ResultUtils.getResultFromJson(s, Wallet.class);
+            if (result != null && result.isRetMsg()) {
+              Wallet wallet = (Wallet) result.getRetData();
+              SuperwechatHelper.getInstance().setCurrentuserChange(wallet.getBalance().toString());
+
+            }
+          }
+
+        }
+
+        @Override
+        public void onError(String error) {
+
+        }
+      });
+    }
+
+    if(change>gift.getGprice()&&change>0){
+      //扣钱，发礼物
+      NetDao.GivingGifts(this, EMClient.getInstance().getCurrentUser(), anchorId, gid, new OkHttpUtils.OnCompleteListener<String>() {
+        @Override
+        public void onSuccess(String s) {
+          if(s!=null){
+            Result result = ResultUtils.getResultFromJson(s, Wallet.class);
+            if(result!=null&&result.isRetMsg()){
+              Wallet wallet = (Wallet) result.getRetData();
+              Log.e("main",wallet.toString());
+              if(wallet!=null){
+                sendGift(gid);
+                SuperwechatHelper.getInstance().setCurrentuserChange(wallet.getBalance().toString());
+              }else {
+                Toast.makeText(context,"支付失败",Toast.LENGTH_LONG).show();
+              }
+            }
+          }
+        }
+        @Override
+        public void onError(String error) {
+
+        }
+      });
+
+    }else {
+      AlertDialog.Builder builder = new AlertDialog.Builder(context);
+      builder.setTitle("支付错误").setMessage("账号余额不足，请前往充值。")
+              .setPositiveButton("前往充值", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                  Intent intent = new Intent(context,ChangeActivity.class);
+                  startActivity(intent);
+                }
+              });
+      builder.setNegativeButton("取消",null);
+      builder.create().show();
+    }
+
   }
 
   @OnClick(R.id.chat_image) void onChatImageClick() {
