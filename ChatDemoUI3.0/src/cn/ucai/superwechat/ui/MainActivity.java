@@ -61,6 +61,10 @@ import cn.ucai.superwechat.I;
 import cn.ucai.superwechat.R;
 import cn.ucai.superwechat.SuperwechatHelper;
 import cn.ucai.superwechat.adapter.MainTabAdpter;
+import cn.ucai.superwechat.bean.Result;
+import cn.ucai.superwechat.bean.Wallet;
+import cn.ucai.superwechat.data.NetDao;
+import cn.ucai.superwechat.data.OkHttpUtils;
 import cn.ucai.superwechat.db.InviteMessgeDao;
 import cn.ucai.superwechat.db.UserDao;
 import cn.ucai.superwechat.dialog.TitleMenu.ActionItem;
@@ -69,6 +73,7 @@ import cn.ucai.superwechat.runtimepermissions.PermissionsManager;
 import cn.ucai.superwechat.runtimepermissions.PermissionsResultAction;
 import cn.ucai.superwechat.utils.L;
 import cn.ucai.superwechat.utils.MFGT;
+import cn.ucai.superwechat.utils.ResultUtils;
 import cn.ucai.superwechat.widget.DMTabHost;
 import cn.ucai.superwechat.widget.MFViewPager;
 
@@ -136,7 +141,7 @@ public class MainActivity extends BaseActivity implements DMTabHost.OnCheckedCha
         contactListFragment = new ContactListFragment();
         conversationListFragment = new ConversationListFragment();
         initView();
-
+        iniyData();
         umeng();
         checkAccount(savedInstanceState);
 
@@ -157,6 +162,28 @@ public class MainActivity extends BaseActivity implements DMTabHost.OnCheckedCha
         EMClient.getInstance().contactManager().setContactListener(new MyContactListener());
         //debug purpose only
         registerInternalDebugReceiver();
+    }
+
+    private void iniyData() {
+        //下载用户余额
+        NetDao.GetBalance(this, EMClient.getInstance().getCurrentUser(), new OkHttpUtils.OnCompleteListener<String>() {
+            @Override
+            public void onSuccess(String s) {
+                if (s != null) {
+                    Result result = ResultUtils.getResultFromJson(s, Wallet.class);
+                    if (result != null && result.isRetMsg()) {
+                        Wallet wallet = (Wallet) result.getRetData();
+                        SuperwechatHelper.getInstance().setCurrentuserChange(wallet.getBalance().toString());
+                    }
+                }
+
+            }
+
+            @Override
+            public void onError(String error) {
+
+            }
+        });
     }
 
     private void checkAccount(Bundle savedInstanceState) {
@@ -236,7 +263,7 @@ public class MainActivity extends BaseActivity implements DMTabHost.OnCheckedCha
         layoutViewpage.setOffscreenPageLimit(4);
         adapter.addFragment(conversationListFragment, getString(R.string.app_name));
         adapter.addFragment(contactListFragment, getString(R.string.contacts));
-        adapter.addFragment(new DicoverFragment(), getString(R.string.discover));
+        adapter.addFragment(new LiveFragment(), getString(R.string.living));
         adapter.addFragment(new ProfileFragment(), getString(R.string.me));
         adapter.notifyDataSetChanged();
         currentTabIndex = 0;

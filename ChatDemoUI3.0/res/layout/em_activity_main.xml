@@ -55,7 +55,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 app:drawableTop ="@drawable/tab_find"
-                app:tabtext="@string/discover">
+                app:tabtext="@string/living">
 
             </cn.ucai.superwechat.widget.DMTabButton>
 

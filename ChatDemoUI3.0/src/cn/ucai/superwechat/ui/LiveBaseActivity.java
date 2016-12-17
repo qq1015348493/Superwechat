@@ -495,31 +495,7 @@ public abstract class LiveBaseActivity extends BaseActivity {
   }
   private void PayGift(final int gid) {
     Gift gift = SuperwechatHelper.getInstance().getAppGiftList().get(gid);
-    String a = SuperwechatHelper.getInstance().getCurrentuserChange();
-    int change = 0;
-    if(a!=null){
-      change = Integer.getInteger(a);
-    }else {
-      NetDao.GetBalance(this, EMClient.getInstance().getCurrentUser(), new OkHttpUtils.OnCompleteListener<String>() {
-        @Override
-        public void onSuccess(String s) {
-          if (s != null) {
-            Result result = ResultUtils.getResultFromJson(s, Wallet.class);
-            if (result != null && result.isRetMsg()) {
-              Wallet wallet = (Wallet) result.getRetData();
-              SuperwechatHelper.getInstance().setCurrentuserChange(wallet.getBalance().toString());
-
-            }
-          }
-
-        }
-
-        @Override
-        public void onError(String error) {
-
-        }
-      });
-    }
+    int  change = Integer.parseInt(SuperwechatHelper.getInstance().getCurrentuserChange());
 
     if(change>gift.getGprice()&&change>0){
       //扣钱，发礼物
@@ -547,7 +523,8 @@ public abstract class LiveBaseActivity extends BaseActivity {
       });
 
     }else {
-      AlertDialog.Builder builder = new AlertDialog.Builder(context);
+
+      AlertDialog.Builder builder = new AlertDialog.Builder(this,R.style.AlertDialogCustom);
       builder.setTitle("支付错误").setMessage("账号余额不足，请前往充值。")
               .setPositiveButton("前往充值", new DialogInterface.OnClickListener() {
                 @Override
