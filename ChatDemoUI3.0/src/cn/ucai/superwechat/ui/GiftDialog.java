@@ -94,13 +94,13 @@ public class GiftDialog extends DialogFragment {
     }
 
     private void initData() {
-        UserDao dao = new UserDao(context);
         Map<Integer,Gift> gifts = SuperwechatHelper.getInstance().getAppGiftList();
         if(gifts!=null && !gifts.isEmpty()){
-
-            for(Gift gift : gifts.values()){
+            for(int i=1;i<=gifts.size();i++){
+                Gift gift = gifts.get(i);
                 myList.add(gift);
             }
+
             adapter = new GiftAdapter(context,myList);
             giftRecycler.setAdapter(adapter);
         }else {

@@ -207,11 +207,11 @@ public class LiveFragment extends Fragment {
         @Override
         public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
             if(getItemViewType(position)==Constant.ACTION_TYPE_FOOTER){
-                PublicChatRoomsActivity.PhotoAdapter.FooterViewHolder vh = (PublicChatRoomsActivity.PhotoAdapter.FooterViewHolder) holder;
+                FooterViewHolder vh = (FooterViewHolder) holder;
                 vh.loadingText.setText(getFootString());
                 vh.loadingBar.setVisibility(isMore?View.VISIBLE:View.GONE);
             }else {
-                final PublicChatRoomsActivity.PhotoAdapter.PhotoViewHolder vh = (PublicChatRoomsActivity.PhotoAdapter.PhotoViewHolder) holder;
+                PhotoViewHolder vh = (PhotoViewHolder) holder;
                 final LiveRoom liveRoom = liveRoomList.get(position);
                 vh.anchor.setText(liveRoom.getName());
                 vh.audienceNum.setText(liveRoom.getAudienceNum()+"人");
